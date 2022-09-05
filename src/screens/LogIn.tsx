@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import AuthLayout from '../components/auth/AuthLayout';
@@ -7,9 +7,18 @@ import AuthButton from '../components/auth/AuthButton';
 import {useForm} from 'react-hook-form';
 import {colors} from '../colors';
 import {gql, useMutation} from '@apollo/client';
+import {logUserIn} from '../apollo';
 
-const LOGIN_MUTATION = gql`
-  mutation login($username: string!, $password: string!) {
+interface ILoginResponse {
+  login: {
+    ok: string;
+    error: string;
+    token?: string;
+  };
+}
+
+const LOG_IN_MUTATION = gql`
+  mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       ok
       error
@@ -20,23 +29,39 @@ const LOGIN_MUTATION = gql`
 
 const LogIn = () => {
   const navigation = useNavigation();
-  const {register, setValue, setFocus, handleSubmit} = useForm();
+  const {register, setValue, setFocus, handleSubmit, watch} = useForm();
 
-  const loginMutationUpdate = (cache: any, data: object) => {
-    console.log(cache, data);
+  const loginMutationCompleted = (data: ILoginResponse) => {
+    const {
+      login: {ok, token, error},
+    } = data;
+    if (ok && token) {
+      logUserIn(token);
+    } else if (error) {
+      Alert.alert(error);
+    }
   };
-  const [loginMutation] = useMutation(LOGIN_MUTATION, {
-    update: loginMutationUpdate,
+
+  const [logInMutation, {loading}] = useMutation(LOG_IN_MUTATION, {
+    onCompleted: loginMutationCompleted,
   });
 
   const onVaild = (data: object) => {
-    console.log(data);
+    if (!loading) {
+      logInMutation({
+        variables: {
+          ...data,
+        },
+      });
+    }
   };
 
   return (
     <AuthLayout>
       <TextInput
-        {...register('username')}
+        {...register('username', {
+          required: true,
+        })}
         placeholder="Username"
         placeholderTextColor={colors.placeholder}
         style={{color: 'white'}}
@@ -46,7 +71,9 @@ const LogIn = () => {
         onChangeText={(text: string) => setValue('username', text)}
       />
       <TextInput
-        {...register('password')}
+        {...register('password', {
+          required: true,
+        })}
         placeholder="Password"
         secureTextEntry
         placeholderTextColor={colors.placeholder}
@@ -58,7 +85,8 @@ const LogIn = () => {
       <AuthButton
         value="Log In"
         onPress={handleSubmit(onVaild)}
-        disabled={false}
+        loading={loading}
+        disabled={!watch('username') || !watch('password')}
       />
     </AuthLayout>
   );

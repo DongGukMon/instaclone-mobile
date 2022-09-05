@@ -6,11 +6,20 @@ import AuthButton from '../components/auth/AuthButton';
 import {useForm} from 'react-hook-form';
 import {colors} from '../colors';
 import {gql, useMutation} from '@apollo/client';
+import {Alert} from 'react-native';
+import {showSuccessToast} from '../utils/Toast';
+
+interface ICreateAccountResponse {
+  createAccount: {
+    ok: boolean;
+    error: string;
+  };
+}
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccount(
-    $fistName: string!
-    $lastName: string
+    $firstName: String!
+    $lastName: String
     $username: String!
     $email: String!
     $password: String!
@@ -30,27 +39,33 @@ const CREATE_ACCOUNT_MUTATION = gql`
 
 const CreateAccount = () => {
   const navigation = useNavigation();
-  const {register, setValue, handleSubmit, setFocus} = useForm({});
+  const {register, setValue, handleSubmit, setFocus, reset} = useForm({});
 
-  const createAccountUpdate = (cache: any, data: object) => {
-    console.log(cache);
-    console.log(data);
+  const createAccountCompleted = (data: ICreateAccountResponse) => {
+    reset();
+    const {
+      createAccount: {ok, error},
+    } = data;
+    if (ok) {
+      navigation.navigate('LogIn' as never);
+      showSuccessToast('Sign up completed');
+    } else {
+      Alert.alert(error);
+    }
   };
 
-  const [createAccountMutation] = useMutation(CREATE_ACCOUNT_MUTATION, {
-    update: createAccountUpdate,
-  });
+  const [createAccountMutation, {loading}] = useMutation(
+    CREATE_ACCOUNT_MUTATION,
+    {
+      onCompleted: createAccountCompleted,
+      onError: error => console.log(JSON.stringify(error, null, 1)),
+    },
+  );
 
   const onVaild = (data: any) => {
-    const {firstName, lastName, username, email, password} = data;
-
     createAccountMutation({
       variables: {
-        firstName,
-        lastName,
-        username,
-        email,
-        password,
+        ...data,
       },
     });
   };
@@ -58,7 +73,7 @@ const CreateAccount = () => {
   return (
     <AuthLayout>
       <TextInput
-        {...register('firstName')}
+        {...register('firstName', {required: true})}
         placeholder="First Name"
         placeholderTextColor={colors.placeholder}
         style={{color: 'white'}}
@@ -78,7 +93,7 @@ const CreateAccount = () => {
         blurOnSubmit={false}
       />
       <TextInput
-        {...register('username')}
+        {...register('username', {required: true})}
         placeholder="Username"
         placeholderTextColor={colors.placeholder}
         style={{color: 'white'}}
@@ -89,7 +104,7 @@ const CreateAccount = () => {
         blurOnSubmit={false}
       />
       <TextInput
-        {...register('email')}
+        {...register('email', {required: true})}
         placeholder="Email"
         placeholderTextColor={colors.placeholder}
         style={{color: 'white'}}
@@ -101,7 +116,7 @@ const CreateAccount = () => {
         blurOnSubmit={false}
       />
       <TextInput
-        {...register('password')}
+        {...register('password', {required: true})}
         placeholder="Password"
         secureTextEntry
         placeholderTextColor={colors.placeholder}
@@ -114,7 +129,7 @@ const CreateAccount = () => {
         value="Create Account"
         disabled={false}
         onPress={handleSubmit(onVaild)}
-        // onPress={() => setFocus('firstName')}
+        loading={loading}
       />
     </AuthLayout>
   );
