@@ -1,6 +1,6 @@
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import {Alert} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import AuthLayout from '../components/auth/AuthLayout';
 import {TextInput} from '../components/auth/AuthShared';
 import AuthButton from '../components/auth/AuthButton';
@@ -28,15 +28,20 @@ const LOG_IN_MUTATION = gql`
 `;
 
 const LogIn = () => {
-  const navigation = useNavigation();
-  const {register, setValue, setFocus, handleSubmit, watch} = useForm();
+  const route = useRoute<any>();
+  const {register, setValue, setFocus, handleSubmit, watch} = useForm({
+    defaultValues: {
+      username: route.params?.username,
+      password: route.params?.password,
+    },
+  });
 
-  const loginMutationCompleted = (data: ILoginResponse) => {
+  const loginMutationCompleted = async (data: ILoginResponse) => {
     const {
       login: {ok, token, error},
     } = data;
     if (ok && token) {
-      logUserIn(token);
+      await logUserIn(token);
     } else if (error) {
       Alert.alert(error);
     }
@@ -44,6 +49,7 @@ const LogIn = () => {
 
   const [logInMutation, {loading}] = useMutation(LOG_IN_MUTATION, {
     onCompleted: loginMutationCompleted,
+    onError: e => console.log(JSON.stringify(e, null, 1)),
   });
 
   const onVaild = (data: object) => {
@@ -62,6 +68,7 @@ const LogIn = () => {
         {...register('username', {
           required: true,
         })}
+        value={watch('username')}
         placeholder="Username"
         placeholderTextColor={colors.placeholder}
         style={{color: 'white'}}
@@ -74,6 +81,7 @@ const LogIn = () => {
         {...register('password', {
           required: true,
         })}
+        value={watch('password')}
         placeholder="Password"
         secureTextEntry
         placeholderTextColor={colors.placeholder}

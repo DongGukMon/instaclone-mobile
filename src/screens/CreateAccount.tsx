@@ -39,15 +39,23 @@ const CREATE_ACCOUNT_MUTATION = gql`
 
 const CreateAccount = () => {
   const navigation = useNavigation();
-  const {register, setValue, handleSubmit, setFocus, reset} = useForm({});
+  const {register, setValue, handleSubmit, setFocus, reset, watch, getValues} =
+    useForm();
 
   const createAccountCompleted = (data: ICreateAccountResponse) => {
-    reset();
     const {
       createAccount: {ok, error},
     } = data;
     if (ok) {
-      navigation.navigate('LogIn' as never);
+      const {username, password} = getValues();
+      navigation.navigate(
+        'LogIn' as never,
+        {
+          username,
+          password,
+        } as never,
+      );
+      reset();
       showSuccessToast('Sign up completed');
     } else {
       Alert.alert(error);
@@ -68,6 +76,15 @@ const CreateAccount = () => {
         ...data,
       },
     });
+  };
+
+  const isVaild = () => {
+    return !(
+      watch('firstName') &&
+      watch('username') &&
+      watch('email') &&
+      watch('password')
+    );
   };
 
   return (
@@ -127,7 +144,7 @@ const CreateAccount = () => {
       />
       <AuthButton
         value="Create Account"
-        disabled={false}
+        disabled={isVaild()}
         onPress={handleSubmit(onVaild)}
         loading={loading}
       />

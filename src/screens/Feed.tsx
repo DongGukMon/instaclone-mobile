@@ -22,13 +22,20 @@ export default function Feed() {
     console.log(data);
   };
   return (
-    <View>
-      <Text>Hi guys~</Text>
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+        backgroundColor: 'black',
+      }}>
+      <Text style={{color: 'white'}}>Hi guys~</Text>
       <TouchableOpacity onPress={() => logUserOut()}>
-        <Text>로그아웃</Text>
+        <Text style={{color: 'white'}}>로그아웃</Text>
       </TouchableOpacity>
+
       <TouchableOpacity onPress={() => loadProfile()}>
-        <Text>프로필 보기</Text>
+        <Text style={{color: 'white'}}>프로필 보기</Text>
       </TouchableOpacity>
     </View>
   );
