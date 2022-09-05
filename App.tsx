@@ -6,7 +6,6 @@ import {ApolloProvider, useReactiveVar} from '@apollo/client';
 import {checkLogIn, client} from './src/apollo';
 import LoggedInNav from './src/navigators/LoggedInNav';
 import {isLoggedInVar} from './src/apollo';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 
 const App = () => {

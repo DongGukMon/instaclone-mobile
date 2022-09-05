@@ -1,7 +1,9 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, Text} from 'react-native';
 
 export default function Profile() {
+  const {navigate} = useNavigation();
   return (
     <View
       style={{

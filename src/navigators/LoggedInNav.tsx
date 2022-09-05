@@ -6,6 +6,7 @@ import Notifiactions from '../screens/Notifications';
 import Profile from '../screens/Profile';
 import {View} from 'react-native';
 import TabIcon from '../components/nav/TabIcon';
+import SharedStackNav from './SharedStackNav';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,85 +19,60 @@ export default function LoggedInNav() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: 'black',
-          // borderTopColor: 'rgba(255,255,255,0.3',
-          borderTopColor: 'red',
+          borderTopColor: 'rgba(255,255,255,0.3)',
         },
       }}>
       <Tab.Screen
-        name="Feed"
-        component={Feed}
+        name="TabFeed"
+        options={{
+          tabBarIcon: ({focused, color}) => {
+            return <TabIcon iconName="home" focused={focused} color={color} />;
+          },
+        }}>
+        {() => <SharedStackNav screenName="Feed" />}
+      </Tab.Screen>
+      <Tab.Screen
+        name="TabSearch"
         options={{
           tabBarIcon: ({focused, color}) => {
             return (
-              <TabIcon
-                iconName="home-outline"
-                focused={focused}
-                color={color}
-              />
+              <TabIcon iconName="search" focused={focused} color={color} />
             );
           },
-        }}
-      />
+        }}>
+        {() => <SharedStackNav screenName="Search" />}
+      </Tab.Screen>
       <Tab.Screen
-        name="Search"
-        component={Search}
-        options={{
-          tabBarIcon: ({focused, color}) => {
-            return (
-              <TabIcon
-                iconName="search-outline"
-                focused={focused}
-                color={color}
-              />
-            );
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Camera"
+        name="TabCamera"
         component={View}
         options={{
           tabBarIcon: ({focused, color}) => {
             return (
-              <TabIcon
-                iconName="camera-outline"
-                focused={focused}
-                color={color}
-              />
+              <TabIcon iconName="camera" focused={focused} color={color} />
             );
           },
         }}
       />
       <Tab.Screen
-        name="Notifications"
-        component={Notifiactions}
+        name="TabNotifications"
         options={{
           tabBarIcon: ({focused, color}) => {
-            return (
-              <TabIcon
-                iconName="heart-outline"
-                focused={focused}
-                color={color}
-              />
-            );
+            return <TabIcon iconName="heart" focused={focused} color={color} />;
           },
-        }}
-      />
+        }}>
+        {() => <SharedStackNav screenName="Notifications" />}
+      </Tab.Screen>
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="TabProfile"
         options={{
           tabBarIcon: ({focused, color}) => {
             return (
-              <TabIcon
-                iconName="person-outline"
-                focused={focused}
-                color={color}
-              />
+              <TabIcon iconName="person" focused={focused} color={color} />
             );
           },
-        }}
-      />
+        }}>
+        {() => <SharedStackNav screenName="Profile" />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }

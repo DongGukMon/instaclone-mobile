@@ -10,7 +10,7 @@ interface TabIconProps {
 const TabIcon = ({iconName, focused, color}: TabIconProps) => {
   return (
     <Icon
-      name={focused ? `${iconName}-outline` : iconName}
+      name={focused ? iconName : `${iconName}-outline`}
       color={color}
       size={focused ? 24 : 20}
     />
