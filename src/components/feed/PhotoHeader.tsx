@@ -16,10 +16,10 @@ const PhotoHeaderContainer = styled.View`
 
 const AvatarContainer = styled.View`
   background-color: gray;
-  border-radius: 30;
+  border-radius: 30px;
   overflow: hidden;
-  width: 32;
-  height: 32;
+  width: 32px;
+  height: 32px;
 `;
 
 const FatText = styled.Text`
@@ -29,7 +29,7 @@ const FatText = styled.Text`
   font-size: 16px;
 `;
 
-export default function Photoheader({username, avatar}: PhotoHeaderProps) {
+function Photoheader({username, avatar}: PhotoHeaderProps) {
   return (
     <PhotoHeaderContainer>
       <TouchableOpacity>
@@ -44,3 +44,5 @@ export default function Photoheader({username, avatar}: PhotoHeaderProps) {
     </PhotoHeaderContainer>
   );
 }
+
+export default React.memo(Photoheader);

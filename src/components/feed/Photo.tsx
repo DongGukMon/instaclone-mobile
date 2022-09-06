@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
+import {TextInput} from '../auth/AuthShared';
 import ActionButtons from './ActionButtons';
+import Comment from './Comment';
 import Comments from './Comments';
 import Photoheader from './PhotoHeader';
+import PhotoImage from './PhotoImage';
 
 interface PhotoProps {
+  id: number;
   file: string;
   caption: string;
   likes: number;
@@ -30,21 +34,12 @@ interface PhotoProps {
   ];
   isMine: boolean;
   isLiked: boolean;
+  children: React.ReactNode;
 }
 
 const PostContainer = styled.View`
   width: 100%;
   margin-top: 20px;
-`;
-const PhotoContainer = styled.View`
-  width: 100%;
-  height: 400;
-`;
-
-const PostImage = styled.Image`
-  width: 100%;
-  height: 400px;
-  align-self: center;
 `;
 
 function Photo({
@@ -56,19 +51,22 @@ function Photo({
   commentNumber,
   isMine,
   isLiked,
+  children,
+  id,
 }: PhotoProps) {
+  console.log(`${id} Photo render!`);
+
   return (
     <PostContainer>
       <Photoheader username={user?.username} avatar={user?.avatar} />
-      <PhotoContainer>
-        <PostImage resizeMode="cover" source={{uri: file}} />
-      </PhotoContainer>
-      <ActionButtons isLiked={isLiked} likes={likes} />
+      <PhotoImage file={file} />
+      <ActionButtons isLiked={isLiked} likes={likes} id={id} />
       <Comments
-        comments={comments}
         caption={caption}
         commentNumber={commentNumber}
         author={user?.username}
+        comments={comments}
+        photoId={id}
       />
     </PostContainer>
   );

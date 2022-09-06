@@ -7,3 +7,10 @@ export const TextInput = styled.TextInput`
   margin-bottom: 8px;
   border-radius: 4px;
 `;
+
+export const CommentTextInput = styled(TextInput)`
+  height: 100%;
+  width: 90%;
+  background-color: transparent;
+  color: white;
+`;

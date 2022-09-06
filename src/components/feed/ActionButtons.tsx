@@ -1,12 +1,25 @@
-import React, {useState} from 'react';
+import {gql, useMutation} from '@apollo/client';
+import React, {useCallback, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
+import PhotoIcon from './PhotoIcon';
 
 interface ActionButtonsProps {
   isLiked: boolean;
   likes: number;
+  id: number;
 }
+
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      result
+      error
+    }
+  }
+`;
 
 const BaseContainer = styled.View`
   flex-direction: row;
@@ -18,10 +31,6 @@ const ActionButtonContainewr = styled.View`
   padding: 10px 5px;
 `;
 
-const ActionButton = styled.TouchableOpacity`
-  margin: 0px 5px;
-`;
-
 const Likes = styled.Text`
   font-weight: 600;
   font-size: 16px;
@@ -29,33 +38,60 @@ const Likes = styled.Text`
   margin: 5px 0px 5px 5px;
 `;
 
-export default function ActionButtons({isLiked, likes}: ActionButtonsProps) {
-  const [isLikedState, setIsLikedState] = useState(isLiked);
+function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
+  const toggleLikeUpdate = (
+    cache: any,
+    {
+      data: {
+        toggleLike: {ok, error},
+      },
+    }: any,
+  ) => {
+    if (ok) {
+      cache.modify({
+        id: `Photo:${id}`,
+        fields: {
+          likes: (prev: number) => (isLiked ? prev - 1 : prev + 1),
+          isLiked: (prev: boolean) => !prev,
+        },
+      });
+    } else if (error) {
+      console.log(error);
+    }
+  };
+
+  const [toggleLikeMutation, {loading}] = useMutation(TOGGLE_LIKE_MUTATION, {
+    update: toggleLikeUpdate,
+    onError: e => console.log(JSON.stringify(e, null, 1)),
+    variables: {
+      id,
+    },
+  });
+
   return (
     <ActionButtonContainewr>
       <BaseContainer>
         <BaseContainer>
-          <ActionButton onPress={() => setIsLikedState(!isLikedState)}>
-            <Icon
-              name={isLikedState ? 'heart' : 'heart-outline'}
-              color={isLikedState ? 'red' : 'white'}
-              size={30}
-            />
-          </ActionButton>
-          <ActionButton>
-            <Icon name="chatbubbles-outline" color="white" size={30} />
-          </ActionButton>
-          <ActionButton>
-            <Icon name="send-outline" color="white" size={30} />
-          </ActionButton>
+          <PhotoIcon
+            iconName={'heart'}
+            onPress={() => {
+              toggleLikeMutation();
+            }}
+            isLiked={isLiked}
+          />
+          <PhotoIcon
+            iconName="chatbubbles"
+            onPress={useCallback(() => {}, [])}
+          />
+          <PhotoIcon iconName="send" onPress={useCallback(() => {}, [])} />
         </BaseContainer>
         <View>
-          <ActionButton>
-            <Icon name="bookmark-outline" color="white" size={30} />
-          </ActionButton>
+          <PhotoIcon iconName="bookmark" onPress={useCallback(() => {}, [])} />
         </View>
       </BaseContainer>
       <Likes>{likes === 1 ? `1 like` : `${likes} likes`}</Likes>
     </ActionButtonContainewr>
   );
 }
+
+export default React.memo(ActionButtons);

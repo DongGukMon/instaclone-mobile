@@ -7,6 +7,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {TextInput} from '../components/auth/AuthShared';
 import ScreenLayout from '../components/ScreenLayout';
 import Photo from '../components/feed/Photo';
+import Photoheader from '../components/feed/PhotoHeader';
+import Comments from '../components/feed/Comments';
+import Comment from '../components/feed/Comment';
+import ActionButtons from '../components/feed/ActionButtons';
 
 const SEE_PROFILE_QUERY = gql`
   query seeProfile($username: String!) {
@@ -48,15 +52,12 @@ const SEE_FEED_QUERY = gql`
 `;
 
 const rendItem = ({item}: any) => {
-  console.log(item);
   return <Photo {...item} />;
 };
 
 export default function Feed() {
   const {data, loading} = useQuery(SEE_FEED_QUERY);
   const photos = data?.seeFeed;
-
-  console.log(photos);
 
   return (
     <ScreenLayout loading={loading}>
