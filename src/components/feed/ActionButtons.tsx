@@ -1,7 +1,7 @@
 import {gql, useMutation} from '@apollo/client';
-import React, {useCallback, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback} from 'react';
 import {TouchableOpacity, View} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
 import PhotoIcon from './PhotoIcon';
 
@@ -31,7 +31,7 @@ const ActionButtonContainewr = styled.View`
   padding: 10px 5px;
 `;
 
-const Likes = styled.Text`
+const LikeNumber = styled.Text`
   font-weight: 600;
   font-size: 16px;
   color: white;
@@ -39,6 +39,8 @@ const Likes = styled.Text`
 `;
 
 function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
+  const {navigate} = useNavigation();
+
   const toggleLikeUpdate = (
     cache: any,
     {
@@ -68,6 +70,8 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
     },
   });
 
+  const goToLikes = useCallback(() => navigate('Likes' as never), []);
+
   return (
     <ActionButtonContainewr>
       <BaseContainer>
@@ -89,7 +93,9 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
           <PhotoIcon iconName="bookmark" onPress={useCallback(() => {}, [])} />
         </View>
       </BaseContainer>
-      <Likes>{likes === 1 ? `1 like` : `${likes} likes`}</Likes>
+      <TouchableOpacity onPress={goToLikes}>
+        <LikeNumber>{likes === 1 ? `1 like` : `${likes} likes`}</LikeNumber>
+      </TouchableOpacity>
     </ActionButtonContainewr>
   );
 }

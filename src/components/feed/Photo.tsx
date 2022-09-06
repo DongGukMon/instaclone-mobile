@@ -1,11 +1,7 @@
-import React, {useCallback, useMemo} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React from 'react';
 import styled from 'styled-components/native';
-import {TextInput} from '../auth/AuthShared';
 import ActionButtons from './ActionButtons';
-import Comment from './Comment';
-import Comments from './Comments';
+import CommentsComponent from './CommentsComponent';
 import Photoheader from './PhotoHeader';
 import PhotoImage from './PhotoImage';
 
@@ -22,7 +18,7 @@ interface PhotoProps {
   };
   comments: [
     {
-      id: string;
+      id: number;
       payload: string;
       user: {
         username: string;
@@ -61,7 +57,7 @@ function Photo({
       <Photoheader username={user?.username} avatar={user?.avatar} />
       <PhotoImage file={file} />
       <ActionButtons isLiked={isLiked} likes={likes} id={id} />
-      <Comments
+      <CommentsComponent
         caption={caption}
         commentNumber={commentNumber}
         author={user?.username}

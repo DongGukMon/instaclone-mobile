@@ -1,13 +1,14 @@
+import {useNavigation} from '@react-navigation/native';
 import {isDefinitionNode} from 'graphql';
 import React, {useCallback} from 'react';
 import {useForm} from 'react-hook-form';
-import {Text, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import styled from 'styled-components/native';
 import {TextInput} from '../auth/AuthShared';
 import Comment from './Comment';
 import CommentInput from './commentInput';
 
-interface CommentsProps {
+interface CommentsComponentProps {
   photoId: number;
   comments: [
     {
@@ -27,8 +28,9 @@ interface CommentsProps {
 
 const CommentNumber = styled.Text`
   color: white;
-  opacity: 0.5;
+  opacity: 0.8;
   margin-bottom: 10px;
+  margin-top: 3px;
   font-size: 12px;
 `;
 
@@ -36,14 +38,14 @@ const CommentsContainer = styled.View`
   padding: 0px 10px;
 `;
 
-function Comments({
+function CommentsComponent({
   caption,
   commentNumber,
   author,
   comments,
   photoId,
-}: CommentsProps) {
-  console.log(`${caption} comments render!`);
+}: CommentsComponentProps) {
+  const {navigate} = useNavigation();
 
   const commentRender = useCallback(() => {
     return comments?.map(comment => {
@@ -66,15 +68,19 @@ function Comments({
     });
   }, [comments]);
 
+  const goToComments = useCallback(() => navigate('Comments' as never), []);
+
   return (
     <CommentsContainer>
       <Comment payload={caption} username={author} isCaption={true} />
-      <CommentNumber>
-        {commentNumber === 1 ? '1 comment' : `${commentNumber} comments`}
-      </CommentNumber>
+      <TouchableOpacity onPress={goToComments}>
+        <CommentNumber>
+          {commentNumber === 1 ? '1 comment' : `${commentNumber} comments`}
+        </CommentNumber>
+      </TouchableOpacity>
       {commentRender()}
       <CommentInput inputName="comment" photoId={photoId} />
     </CommentsContainer>
   );
 }
-export default React.memo(Comments);
+export default React.memo(CommentsComponent);

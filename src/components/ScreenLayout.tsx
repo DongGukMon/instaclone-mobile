@@ -3,7 +3,7 @@ import {View, ActivityIndicator} from 'react-native';
 
 interface ScreenLayoutProps {
   children: React.ReactNode;
-  loading: boolean;
+  loading?: boolean;
 }
 
 export default function ScreenLayout({
