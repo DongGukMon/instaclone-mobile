@@ -14,8 +14,8 @@ const SEE_PROFILE_QUERY = gql`
 `;
 
 const SEE_FEED_QUERY = gql`
-  query seeFeed {
-    seeFeed {
+  query seeFeed($lastId: Int) {
+    seeFeed(lastId: $lastId) {
       id
       user {
         id
@@ -49,13 +49,24 @@ const rendItem = ({item}: any) => {
 
 export default function Feed() {
   const [refreshing, setRefreshing] = useState(false);
-  const {data, loading, refetch} = useQuery(SEE_FEED_QUERY);
+  const {data, loading, refetch, fetchMore} = useQuery(SEE_FEED_QUERY);
   const photos = data?.seeFeed;
 
   const refreshFeed = async () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
+  };
+
+  const loadNewPhoto = () => {
+    const photoLenght = data?.seeFeed?.length;
+    const lastId = data?.seeFeed[photoLenght - 1]?.id;
+
+    fetchMore({
+      variables: {
+        lastId,
+      },
+    });
   };
 
   return (
@@ -68,6 +79,8 @@ export default function Feed() {
             tintColor="white"
           />
         }
+        onEndReached={loadNewPhoto}
+        onEndReachedThreshold={0.02}
         data={photos}
         renderItem={rendItem}
         keyExtractor={item => item.id}

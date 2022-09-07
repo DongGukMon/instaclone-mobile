@@ -1,5 +1,5 @@
 import {gql, useMutation} from '@apollo/client';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useForm} from 'react-hook-form';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -46,8 +46,7 @@ const InputContainer = styled.View`
 const CommentInput = ({inputName, photoId}: CommentInputProps) => {
   const {register, setValue, watch, handleSubmit, getValues} = useForm();
 
-  const userData = useUser();
-  const user = userData?.data?.me;
+  const {user} = useUser();
 
   const createCommentUpdate = (cache: any, result: any) => {
     const {comment} = getValues();

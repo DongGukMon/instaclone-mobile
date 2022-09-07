@@ -1,19 +1,20 @@
 import {Alert} from 'react-native';
 import React from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import AuthLayout from '../components/auth/AuthLayout';
 import {TextInput} from '../components/auth/AuthShared';
 import AuthButton from '../components/auth/AuthButton';
 import {useForm} from 'react-hook-form';
 import {colors} from '../colors';
 import {gql, useMutation} from '@apollo/client';
-import {logUserIn} from '../apollo';
+import {logUserIn, userDataVar} from '../apollo';
 
 interface ILoginResponse {
   login: {
     ok: string;
-    error: string;
+    error?: string;
     token?: string;
+    id?: number;
   };
 }
 
@@ -23,6 +24,7 @@ const LOG_IN_MUTATION = gql`
       ok
       error
       token
+      id
     }
   }
 `;
@@ -38,10 +40,10 @@ const LogIn = () => {
 
   const loginMutationCompleted = async (data: ILoginResponse) => {
     const {
-      login: {ok, token, error},
+      login: {ok, token, error, id},
     } = data;
-    if (ok && token) {
-      await logUserIn(token);
+    if (ok && token && id) {
+      await logUserIn(token, id);
     } else if (error) {
       Alert.alert(error);
     }

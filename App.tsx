@@ -3,13 +3,13 @@ import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import LoggedOutNav from './src/navigators/LoggedOutNav';
 import {ApolloProvider, useReactiveVar} from '@apollo/client';
-import {checkLogIn, client} from './src/apollo';
+import {checkLogIn, client, isLoggedInVar, setUserData} from './src/apollo';
 import LoggedInNav from './src/navigators/LoggedInNav';
-import {isLoggedInVar} from './src/apollo';
 import Toast from 'react-native-toast-message';
 
 const App = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
+  setUserData();
 
   useEffect(() => {
     const loginCheck = async () => {
