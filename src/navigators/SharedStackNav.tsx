@@ -4,7 +4,7 @@ import Feed from '../screens/Feed';
 import Notifiactions from '../screens/Notifications';
 import Profile from '../screens/Profile';
 import Search from '../screens/Search';
-import {Image} from 'react-native';
+import {Image, Text, View} from 'react-native';
 import Comments from '../screens/Comments';
 import Likes from '../screens/Likes';
 

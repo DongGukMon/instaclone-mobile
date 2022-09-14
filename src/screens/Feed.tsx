@@ -4,15 +4,6 @@ import {gql, useQuery} from '@apollo/client';
 import ScreenLayout from '../components/ScreenLayout';
 import Photo from '../components/feed/Photo';
 
-const SEE_PROFILE_QUERY = gql`
-  query seeProfile($username: String!) {
-    seeProfile(username: $username) {
-      isMe
-      username
-    }
-  }
-`;
-
 const SEE_FEED_QUERY = gql`
   query seeFeed($lastId: Int) {
     seeFeed(lastId: $lastId) {

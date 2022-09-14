@@ -8,6 +8,7 @@ import ScreenLayout from '../components/ScreenLayout';
 import UsernameRow from '../components/feed/UsernameRow';
 import {colors} from '../colors';
 import useUser from '../hooks/me';
+import useToggleMutation from '../mutations/useToggleMutation';
 
 interface PhotoTypes {
   avatar?: string;
@@ -29,33 +30,15 @@ const SEE_PHOTO_LIKES = gql`
   }
 `;
 
-const FOLLOW_MUTATION = gql`
-  mutation followUser($username: String!) {
-    followUser(username: $username) {
-      ok
-      error
-      id
-    }
-  }
-`;
-
-const UNFOLLOW_MUTATION = gql`
-  mutation unfollowUser($username: String!) {
-    unfollowUser(username: $username) {
-      ok
-      error
-      id
-    }
-  }
-`;
-
 const FollowText = styled.Text`
-  color: white;
+  color: ${(props: any) => (props.isFollowing ? 'black' : 'white')};
+  opacity: ${(props: any) => props.isFollowing && 0.8};
   font-weight: 600;
 `;
 
 const FollowBtn = styled.TouchableOpacity`
-  background-color: ${colors.blue};
+  background-color: ${(props: any) =>
+    props.isFollowing ? colors.lightGray : colors.blue};
   width: 80px;
   height: 100%;
   justify-content: center;
@@ -68,83 +51,21 @@ export default function Likes() {
     params: {photoId: photoId},
   } = useRoute();
 
-  const {
-    user: {id: meId},
-  } = useUser();
-
-  const followToggleUpdate = (cache: any, followData: any) => {
-    const loggedInUserId = `User:${meId}`;
-
-    if (followData?.data?.unfollowUser) {
-      const userId = `User:${followData?.data?.unfollowUser?.id}`;
-      const {
-        data: {
-          unfollowUser: {ok},
-        },
-      } = followData;
-      if (ok && loggedInUserId && userId) {
-        cache.modify({
-          id: userId,
-          fields: {
-            isFollowing: () => false,
-            totalFollowers: (prev: number) => prev - 1,
-          },
-        });
-        cache.modify({
-          id: loggedInUserId,
-          fields: {
-            totalFollowing: (prev: number) => prev - 1,
-          },
-        });
-      }
-    } else if (followData?.data?.followUser) {
-      const userId = `User:${followData?.data?.followUser?.id}`;
-      const {
-        data: {
-          followUser: {ok},
-        },
-      } = followData;
-      if (ok && loggedInUserId && userId) {
-        cache.modify({
-          id: userId,
-          fields: {
-            isFollowing: () => true,
-            totalFollowers: (prev: number) => prev + 1,
-          },
-        });
-        cache.modify({
-          id: loggedInUserId,
-          fields: {
-            totalFollowing: (prev: number) => prev + 1,
-          },
-        });
-      }
-    }
-  };
-
-  const [followMutation] = useMutation(FOLLOW_MUTATION, {
-    update: followToggleUpdate,
-  });
-
-  const [unfollowMutation] = useMutation(UNFOLLOW_MUTATION, {
-    update: followToggleUpdate,
-  });
-
   const {data, loading} = useQuery(SEE_PHOTO_LIKES, {variables: {id: photoId}});
 
-  const toggleLikes = (username: string, isFollowing: boolean) => {
-    isFollowing
-      ? unfollowMutation({variables: {username}})
-      : followMutation({variables: {username}});
-  };
+  const {toggleLikes} = useToggleMutation();
 
   const renderItem = ({item}: {item: PhotoTypes}) => {
     const {username, avatar, isMe, isFollowing} = item;
     return (
       <UsernameRow username={username} avatar={avatar}>
         {!isMe && (
-          <FollowBtn onPress={() => toggleLikes(username, isFollowing)}>
-            <FollowText>{isFollowing ? 'Unfollow' : 'Follow'}</FollowText>
+          <FollowBtn
+            isFollowing={isFollowing}
+            onPress={() => toggleLikes(username, isFollowing)}>
+            <FollowText isFollowing={isFollowing}>
+              {isFollowing ? 'Unfollow' : 'Follow'}
+            </FollowText>
           </FollowBtn>
         )}
       </UsernameRow>

@@ -4,13 +4,22 @@ import React from 'react';
 import Search from '../screens/Search';
 import Notifiactions from '../screens/Notifications';
 import Profile from '../screens/Profile';
-import {View} from 'react-native';
+import {Image, View} from 'react-native';
 import TabIcon from '../components/nav/TabIcon';
 import SharedStackNav from './SharedStackNav';
+import useUser from '../hooks/me';
+import styled from 'styled-components/native';
 
 const Tab = createBottomTabNavigator();
 
+const Avatar = styled.Image`
+  width: ${(props: any) => (props.focused ? '26px' : '22px')};
+  height: ${(props: any) => (props.focused ? '26px' : '22px')};
+`;
+
 export default function LoggedInNav() {
+  const {user} = useUser();
+  const avatar = user?.avatar;
   return (
     <Tab.Navigator
       screenOptions={{
@@ -66,7 +75,9 @@ export default function LoggedInNav() {
         name="TabProfile"
         options={{
           tabBarIcon: ({focused, color}) => {
-            return (
+            return avatar ? (
+              <Avatar source={{uri: avatar}} focused={focused} />
+            ) : (
               <TabIcon iconName="person" focused={focused} color={color} />
             );
           },
