@@ -9,10 +9,12 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 import {logUserOut} from '../apollo';
+import DismissKeyboard from '../components/DismissKeyboard';
 
 import ScreenLayout from '../components/ScreenLayout';
 
@@ -28,9 +30,9 @@ const SEARCH_PHOTOS_QUERY = gql`
 `;
 
 const PhotosContainer = styled.View`
-  padding: 10px;
+  padding: 40px 10px 10px 10px;
   flex: 1;
-  margin-top: 30px;
+  background-color: black;
 `;
 
 const SearchBox = (
@@ -66,12 +68,15 @@ const SearchBox = (
 
 export default function Search() {
   const {navigate, setOptions} = useNavigation();
-  const {setValue, handleSubmit} = useForm();
+  const {setValue, handleSubmit, register} = useForm();
 
   const [searchPhotosQuery, {data, loading, called}] =
     useLazyQuery(SEARCH_PHOTOS_QUERY);
 
   useEffect(() => {
+    register('keyword', {
+      required: true,
+    });
     setOptions({
       headerTitle: () => SearchBox(searchPhotosQuery, setValue, handleSubmit),
     });
@@ -89,21 +94,41 @@ export default function Search() {
   };
 
   return (
-    <ScreenLayout loading={loading}>
+    <DismissKeyboard>
       {called ? (
-        <PhotosContainer>
-          <FlatList
-            data={data?.searchPhotos}
-            keyExtractor={item => item.id + ''}
-            renderItem={_renderItem}
-            numColumns={3}
-          />
-        </PhotosContainer>
+        loading ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+              backgroundColor: 'black',
+            }}>
+            <ActivityIndicator color="white" />
+            <Text style={{color: 'white', marginTop: 10}}>검색중입니다.</Text>
+          </View>
+        ) : (
+          <PhotosContainer>
+            <FlatList
+              contentContainerStyle={{flex: 1}}
+              data={data?.searchPhotos}
+              keyExtractor={item => item.id + ''}
+              renderItem={_renderItem}
+              numColumns={3}
+            />
+          </PhotosContainer>
+        )
       ) : (
-        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex: 1,
+            backgroundColor: 'black',
+          }}>
           <Text style={{color: 'white'}}>검색어를 입력해주세요</Text>
         </View>
       )}
-    </ScreenLayout>
+    </DismissKeyboard>
   );
 }
