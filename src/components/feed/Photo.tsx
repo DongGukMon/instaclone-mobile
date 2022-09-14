@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import ActionButtons from './ActionButtons';
 import CommentsComponent from './CommentsComponent';
-import Photoheader from './PhotoHeader';
+import UsernameRow from './UsernameRow';
 import PhotoImage from './PhotoImage';
 
 interface PhotoProps {
@@ -50,11 +50,9 @@ function Photo({
   children,
   id,
 }: PhotoProps) {
-  console.log(`${id} Photo render!`);
-
   return (
     <PostContainer>
-      <Photoheader username={user?.username} avatar={user?.avatar} />
+      <UsernameRow username={user?.username} avatar={user?.avatar} />
       <PhotoImage file={file} />
       <ActionButtons isLiked={isLiked} likes={likes} id={id} />
       <CommentsComponent

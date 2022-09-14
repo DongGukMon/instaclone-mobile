@@ -40,7 +40,8 @@ const InputContainer = styled.View`
   flex-direction: row;
   background-color: rgba(255, 255, 255, 0.15);
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
+  height: 50px;
 `;
 
 const CommentInput = ({inputName, photoId}: CommentInputProps) => {
@@ -128,8 +129,10 @@ const CommentInput = ({inputName, photoId}: CommentInputProps) => {
           setValue(inputName, text);
         }}
       />
-      <TouchableOpacity onPress={handleSubmit(onValid)}>
-        <Icon name="paper-plane" color="white" size={30} />
+      <TouchableOpacity
+        onPress={handleSubmit(onValid)}
+        style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+        <Icon name="paper-plane" color="white" size={25} />
       </TouchableOpacity>
     </InputContainer>
   );

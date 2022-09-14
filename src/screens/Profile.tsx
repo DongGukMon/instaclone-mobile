@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, Text} from 'react-native';
+import {logUserOut} from '../apollo';
 
 export default function Profile() {
   const {navigate} = useNavigation();
@@ -13,6 +14,9 @@ export default function Profile() {
         backgroundColor: 'black',
       }}>
       <Text style={{color: 'white'}}>Profile</Text>
+      <Text style={{color: 'white'}} onPress={() => logUserOut()}>
+        log out
+      </Text>
     </View>
   );
 }

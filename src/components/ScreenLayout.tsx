@@ -17,7 +17,7 @@ export default function ScreenLayout({
         flex: 1,
       }}>
       {loading ? (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
           <ActivityIndicator color="white" />
         </View>
       ) : (

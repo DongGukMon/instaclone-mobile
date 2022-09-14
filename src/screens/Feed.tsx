@@ -50,6 +50,7 @@ const rendItem = ({item}: any) => {
 export default function Feed() {
   const [refreshing, setRefreshing] = useState(false);
   const {data, loading, refetch, fetchMore} = useQuery(SEE_FEED_QUERY);
+
   const photos = data?.seeFeed;
 
   const refreshFeed = async () => {

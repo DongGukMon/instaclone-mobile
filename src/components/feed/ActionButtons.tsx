@@ -35,7 +35,8 @@ const LikeNumber = styled.Text`
   font-weight: 600;
   font-size: 16px;
   color: white;
-  margin: 5px 0px 5px 5px;
+  opacity: 0.8;
+  margin: 7px 0px 5px 5px;
 `;
 
 function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
@@ -70,7 +71,10 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
     },
   });
 
-  const goToLikes = useCallback(() => navigate('Likes' as never), []);
+  const goToLikes = useCallback(
+    () => navigate('Likes' as never, {photoId: id} as never),
+    [],
+  );
 
   return (
     <ActionButtonContainewr>
