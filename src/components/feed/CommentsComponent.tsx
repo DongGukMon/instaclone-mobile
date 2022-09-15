@@ -72,7 +72,9 @@ function CommentsComponent({
     });
   }, [comments]);
 
-  const goToComments = () => navigate('Comments' as never, {photoId} as never);
+  const goToComments = useCallback(() => {
+    navigate('Comments' as never, {photoId} as never);
+  }, [photoId]);
 
   return (
     <CommentsContainer>

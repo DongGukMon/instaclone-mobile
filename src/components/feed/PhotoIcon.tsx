@@ -7,17 +7,23 @@ interface PhotoIconProps {
   iconName: string;
   onPress: Function;
   isLiked?: boolean;
+  isBookmarked?: boolean;
 }
 
 const ActionButton = styled.TouchableOpacity`
   margin: 0px 5px;
 `;
 
-const PhotoIcon = ({iconName, onPress, isLiked}: PhotoIconProps) => {
+const PhotoIcon = ({
+  iconName,
+  onPress,
+  isLiked,
+  isBookmarked,
+}: PhotoIconProps) => {
   return (
     <ActionButton onPress={onPress}>
       <Icon
-        name={isLiked ? iconName : `${iconName}-outline`}
+        name={isLiked || isBookmarked ? iconName : `${iconName}-outline`}
         color="white"
         size={30}
       />

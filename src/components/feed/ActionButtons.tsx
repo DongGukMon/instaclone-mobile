@@ -1,6 +1,6 @@
 import {gql, useMutation} from '@apollo/client';
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import styled from 'styled-components/native';
 import PhotoIcon from './PhotoIcon';
@@ -41,6 +41,7 @@ const LikeNumber = styled.Text`
 
 function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
   const {navigate} = useNavigation();
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const toggleLikeUpdate = (
     cache: any,
@@ -76,9 +77,9 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
     [id],
   );
 
-  const goToComments = () => {
+  const goToComments = useCallback(() => {
     navigate('Comments' as never, {photoId: id} as never);
-  };
+  }, [id]);
 
   return (
     <ActionButtonContainewr>
@@ -95,7 +96,13 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
           <PhotoIcon iconName="send" onPress={useCallback(() => {}, [])} />
         </BaseContainer>
         <View>
-          <PhotoIcon iconName="bookmark" onPress={useCallback(() => {}, [])} />
+          <PhotoIcon
+            iconName="bookmark"
+            onPress={useCallback(() => {
+              setIsBookmarked(!isBookmarked);
+            }, [isBookmarked])}
+            isBookmarked={isBookmarked}
+          />
         </View>
       </BaseContainer>
       <TouchableOpacity onPress={goToLikes}>

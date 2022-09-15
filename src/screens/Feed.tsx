@@ -61,11 +61,6 @@ export default function Feed() {
     });
   };
 
-  useEffect(() => {
-    console.log('mount!');
-    return () => console.log('unmount!!!');
-  }, []);
-
   return (
     <ScreenLayout loading={loading}>
       <FlatList

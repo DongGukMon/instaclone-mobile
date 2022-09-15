@@ -86,27 +86,8 @@ const CommentInput = ({inputName, photoId}: CommentInputProps) => {
         data: newComment,
       });
 
-      // const photoCache = cache.readQuery({query: SEE_PHOTO_QUERY});
-      // console.log(photoCache);
-      // cache.writeQuery({
-      //   query: SEE_PHOTO_QUERY,
-      //   data: {
-      //     ...photoCache,
-      //     comments(prev: CommentsTypes) {
-      //       return [...prev, newCacheComment];
-      //     },
-      //     commentNumber(prev: number) {
-      //       return prev + 1;
-      //     },
-      //   },
-      //   variables: {
-      //     id: photoId,
-      //   },
-      // });
-
       cache.modify({
         id,
-
         fields: {
           comments(prev: CommentsTypes) {
             return [...prev, newCacheComment];

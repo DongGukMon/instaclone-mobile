@@ -47,7 +47,11 @@ export default function SharedStackNav({screenName}: {screenName: string}) {
       <Stack.Screen name={'Profile'} component={Profile} />
       <Stack.Screen name={'Comments'} component={Comments} />
       <Stack.Screen name={'Likes'} component={Likes} />
-      <Stack.Screen name={'Detail'} component={Detail} />
+      <Stack.Screen
+        name={'Detail'}
+        component={Detail}
+        options={{headerTitle: 'Photo'}}
+      />
     </Stack.Navigator>
   );
 }

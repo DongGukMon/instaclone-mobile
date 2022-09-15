@@ -42,7 +42,7 @@ export default function Detail() {
     variables: {id: params?.photoId},
   });
   const detailInfo = data?.seePhoto;
-  console.log('detail render');
+
   return (
     <ScreenLayout loading={loading}>
       <ScrollView>

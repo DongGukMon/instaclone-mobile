@@ -9,81 +9,30 @@ import TabIcon from '../components/nav/TabIcon';
 import SharedStackNav from './SharedStackNav';
 import useUser from '../hooks/me';
 import styled from 'styled-components/native';
+import Upload from '../screens/Upload';
+import {createStackNavigator} from '@react-navigation/stack';
+import TabsNav from './TabsNav';
 
-const Tab = createBottomTabNavigator();
-
-const Avatar = styled.Image`
-  width: ${(props: any) => (props.focused ? '26px' : '22px')};
-  height: ${(props: any) => (props.focused ? '26px' : '22px')};
-`;
+const Stack = createStackNavigator();
 
 export default function LoggedInNav() {
-  const {user} = useUser();
-  const avatar = user?.avatar;
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: 'white',
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: 'black',
-          borderTopColor: 'rgba(255,255,255,0.3)',
-        },
-      }}>
-      <Tab.Screen
-        name="TabFeed"
+    <Stack.Navigator screenOptions={{presentation: 'modal'}}>
+      <Stack.Screen
+        name="TabsNav"
+        component={TabsNav}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Upload"
+        component={Upload}
         options={{
-          tabBarIcon: ({focused, color}) => {
-            return <TabIcon iconName="home" focused={focused} color={color} />;
-          },
-        }}>
-        {() => <SharedStackNav screenName="Feed" />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="TabSearch"
-        options={{
-          tabBarIcon: ({focused, color}) => {
-            return (
-              <TabIcon iconName="search" focused={focused} color={color} />
-            );
-          },
-        }}>
-        {() => <SharedStackNav screenName="Search" />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="TabCamera"
-        component={View}
-        options={{
-          tabBarIcon: ({focused, color}) => {
-            return (
-              <TabIcon iconName="camera" focused={focused} color={color} />
-            );
-          },
+          title: '',
+          headerBackTitleVisible: false,
+          headerTintColor: 'white',
+          headerTransparent: true,
         }}
       />
-      <Tab.Screen
-        name="TabNotifications"
-        options={{
-          tabBarIcon: ({focused, color}) => {
-            return <TabIcon iconName="heart" focused={focused} color={color} />;
-          },
-        }}>
-        {() => <SharedStackNav screenName="Notifications" />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="TabProfile"
-        options={{
-          tabBarIcon: ({focused, color}) => {
-            return avatar ? (
-              <Avatar source={{uri: avatar}} focused={focused} />
-            ) : (
-              <TabIcon iconName="person" focused={focused} color={color} />
-            );
-          },
-        }}>
-        {() => <SharedStackNav screenName="Profile" />}
-      </Tab.Screen>
-    </Tab.Navigator>
+    </Stack.Navigator>
   );
 }
