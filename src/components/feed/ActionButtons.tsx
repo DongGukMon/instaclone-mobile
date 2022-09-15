@@ -73,8 +73,12 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
 
   const goToLikes = useCallback(
     () => navigate('Likes' as never, {photoId: id} as never),
-    [],
+    [id],
   );
+
+  const goToComments = () => {
+    navigate('Comments' as never, {photoId: id} as never);
+  };
 
   return (
     <ActionButtonContainewr>
@@ -87,10 +91,7 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
             }}
             isLiked={isLiked}
           />
-          <PhotoIcon
-            iconName="chatbubbles"
-            onPress={useCallback(() => {}, [])}
-          />
+          <PhotoIcon iconName="chatbubbles" onPress={goToComments} />
           <PhotoIcon iconName="send" onPress={useCallback(() => {}, [])} />
         </BaseContainer>
         <View>

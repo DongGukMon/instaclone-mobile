@@ -1,5 +1,5 @@
 import {FlatList, RefreshControl} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {gql, useQuery} from '@apollo/client';
 import ScreenLayout from '../components/ScreenLayout';
 import Photo from '../components/feed/Photo';
@@ -61,6 +61,11 @@ export default function Feed() {
     });
   };
 
+  useEffect(() => {
+    console.log('mount!');
+    return () => console.log('unmount!!!');
+  }, []);
+
   return (
     <ScreenLayout loading={loading}>
       <FlatList
@@ -72,7 +77,7 @@ export default function Feed() {
           />
         }
         onEndReached={loadNewPhoto}
-        onEndReachedThreshold={0.02}
+        onEndReachedThreshold={0}
         data={photos}
         renderItem={rendItem}
         keyExtractor={item => item.id}

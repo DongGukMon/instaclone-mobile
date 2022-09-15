@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
 import useUser from '../../hooks/me';
 import {CommentTextInput, TextInput} from '../auth/AuthShared';
+import {SEE_PHOTO_QUERY} from '../../screens/Comments';
 
 interface CommentInputProps {
   inputName: string;
@@ -85,8 +86,27 @@ const CommentInput = ({inputName, photoId}: CommentInputProps) => {
         data: newComment,
       });
 
+      // const photoCache = cache.readQuery({query: SEE_PHOTO_QUERY});
+      // console.log(photoCache);
+      // cache.writeQuery({
+      //   query: SEE_PHOTO_QUERY,
+      //   data: {
+      //     ...photoCache,
+      //     comments(prev: CommentsTypes) {
+      //       return [...prev, newCacheComment];
+      //     },
+      //     commentNumber(prev: number) {
+      //       return prev + 1;
+      //     },
+      //   },
+      //   variables: {
+      //     id: photoId,
+      //   },
+      // });
+
       cache.modify({
         id,
+
         fields: {
           comments(prev: CommentsTypes) {
             return [...prev, newCacheComment];
@@ -104,7 +124,6 @@ const CommentInput = ({inputName, photoId}: CommentInputProps) => {
   });
 
   const onValid = (data: any) => {
-    console.log(data);
     if (loading) {
       return;
     }

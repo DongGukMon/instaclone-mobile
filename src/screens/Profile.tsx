@@ -119,6 +119,7 @@ export default function Profile() {
 
   const {params}: any = useRoute();
   const {user} = useUser();
+
   const profileUsername = params?.username ? params.username : user.username;
   const {data, loading} = useQuery(SEE_PROFILE_QUERY, {
     variables: {username: profileUsername, page: 1},
@@ -139,9 +140,11 @@ export default function Profile() {
 
   const _renderItem = ({item}: {item: {id: number; file: string}}) => {
     const {id, file} = item;
+    const goToDetail = () =>
+      navigate('Detail' as never, {photoId: id} as never);
     return (
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={goToDetail}
         style={{width: (width - 20) / 3, height: (width - 20) / 3, padding: 2}}>
         <Image source={{uri: file}} style={{width: '100%', height: '100%'}} />
       </TouchableOpacity>

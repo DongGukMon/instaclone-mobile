@@ -84,9 +84,11 @@ export default function Search() {
 
   const _renderItem = ({item}: {item: {id: number; file: string}}) => {
     const {id, file} = item;
+    const goToDetail = () =>
+      navigate('Detail' as never, {photoId: id} as never);
     return (
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={goToDetail}
         style={{width: (width - 20) / 3, height: (width - 20) / 3, padding: 2}}>
         <Image source={{uri: file}} style={{width: '100%', height: '100%'}} />
       </TouchableOpacity>

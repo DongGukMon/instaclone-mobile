@@ -16,11 +16,12 @@ interface CommentsComponentProps {
       payload: string;
       user: {
         username: string;
+        avatar?: string;
       };
       isMine: boolean;
+      createdAt: string;
     },
   ];
-
   caption: string;
   commentNumber: number;
   author: string;
@@ -48,7 +49,10 @@ function CommentsComponent({
   const {navigate} = useNavigation();
 
   const commentRender = useCallback(() => {
-    return comments?.map(comment => {
+    return comments?.map((comment, idx) => {
+      if (idx > 2) {
+        return null;
+      }
       const {
         id,
         payload,
@@ -68,7 +72,7 @@ function CommentsComponent({
     });
   }, [comments]);
 
-  const goToComments = useCallback(() => navigate('Comments' as never), []);
+  const goToComments = () => navigate('Comments' as never, {photoId} as never);
 
   return (
     <CommentsContainer>
@@ -79,7 +83,6 @@ function CommentsComponent({
         </CommentNumber>
       </TouchableOpacity>
       {commentRender()}
-      <CommentInput inputName="comment" photoId={photoId} />
     </CommentsContainer>
   );
 }

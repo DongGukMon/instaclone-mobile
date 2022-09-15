@@ -7,6 +7,7 @@ import Search from '../screens/Search';
 import {Image, Text, View} from 'react-native';
 import Comments from '../screens/Comments';
 import Likes from '../screens/Likes';
+import Detail from '../screens/Detail';
 
 const Stack = createStackNavigator();
 
@@ -46,6 +47,7 @@ export default function SharedStackNav({screenName}: {screenName: string}) {
       <Stack.Screen name={'Profile'} component={Profile} />
       <Stack.Screen name={'Comments'} component={Comments} />
       <Stack.Screen name={'Likes'} component={Likes} />
+      <Stack.Screen name={'Detail'} component={Detail} />
     </Stack.Navigator>
   );
 }
