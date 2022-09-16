@@ -6,6 +6,7 @@ import {ApolloProvider, useReactiveVar} from '@apollo/client';
 import {checkLogIn, client, isLoggedInVar, setUserData} from './src/apollo';
 import LoggedInNav from './src/navigators/LoggedInNav';
 import Toast from 'react-native-toast-message';
+import {StatusBar} from 'react-native';
 
 const App = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -24,6 +25,7 @@ const App = () => {
     <>
       <ApolloProvider client={client}>
         <NavigationContainer>
+          <StatusBar barStyle={'light-content'} />
           {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
         </NavigationContainer>
       </ApolloProvider>

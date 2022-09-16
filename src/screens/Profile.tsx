@@ -222,8 +222,8 @@ export default function Profile() {
         </Column>
         <PhotoList>
           <FlatList
-            data={photos}
-            keyExtractor={item => item.id}
+            data={photos.slice().reverse()}
+            keyExtractor={(item: any) => item.id}
             renderItem={_renderItem}
             numColumns={3}
           />

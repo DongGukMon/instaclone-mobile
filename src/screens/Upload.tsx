@@ -2,18 +2,24 @@ import {gql, useMutation} from '@apollo/client';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {useForm} from 'react-hook-form';
-import {Dimensions} from 'react-native';
+import {
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import styled from 'styled-components/native';
 import {colors} from '../colors';
 import ScreenLayout from '../components/ScreenLayout';
 import {ReactNativeFile} from 'apollo-upload-client';
 import HeaderRight, {FatText, NextBtn} from '../components/camera/HeaderRight';
-
-const {height, width} = Dimensions.get('window');
+import DismissKeyboard from '../components/DismissKeyboard';
+import {PHOTO_FRAGMENT} from '../fragments';
 
 const PostImage = styled.Image`
   width: 100%;
-  height: 400px;
+  height: 300px;
+  /* margin-top: 30px; */
 `;
 
 const CaptionInput = styled.TextInput`
@@ -24,6 +30,7 @@ const CaptionInput = styled.TextInput`
   justify-content: center;
   align-items: center;
   border-radius: 10px;
+  padding-left: 10px;
 `;
 
 const CaptionContainer = styled.View`
@@ -39,31 +46,10 @@ const Container = styled.View`
 const UPLOAD_PHOTO_MUTATION = gql`
   mutation uploadPhoto($file: Upload!, $caption: String) {
     uploadPhoto(file: $file, caption: $caption) {
-      id
-      user {
-        id
-        username
-        avatar
-      }
-      file
-      caption
-      likes
-      commentNumber
-      comments {
-        id
-        payload
-        user {
-          username
-          avatar
-        }
-        isMine
-        createdAt
-      }
-      createdAt
-      isMine
-      isLiked
+      ...PhotoFragment
     }
   }
+  ${PHOTO_FRAGMENT}
 `;
 
 export default function Upload() {
@@ -78,10 +64,18 @@ export default function Upload() {
 
   const uploadPhotoUpload = (cache: any, data: any) => {
     if (data) {
+      const id = `Photo:${data?.data?.uploadPhoto?.id}`;
+
+      cache.writeFragment({
+        id,
+        fragment: PHOTO_FRAGMENT,
+        data: data?.data?.uploadPhoto,
+      });
+
       cache.modify({
         fields: {
           seeFeed: (prev: any) => {
-            return [data?.data?.uploadPhoto, ...prev];
+            return [{__ref: id}, ...prev];
           },
         },
       });
@@ -127,17 +121,19 @@ export default function Upload() {
   }, []);
 
   return (
-    <ScreenLayout>
-      <Container>
-        <PostImage source={{uri}} />
-        <CaptionContainer>
-          <CaptionInput
-            placeholder="caption"
-            onChangeText={(text: string) => setValue('caption', text)}
-            returnKeyType="done"
-          />
-        </CaptionContainer>
-      </Container>
-    </ScreenLayout>
+    <DismissKeyboard>
+      <ScreenLayout>
+        <Container>
+          <PostImage source={{uri}} />
+          <CaptionContainer>
+            <CaptionInput
+              placeholder="caption"
+              onChangeText={(text: string) => setValue('caption', text)}
+              returnKeyType="done"
+            />
+          </CaptionContainer>
+        </Container>
+      </ScreenLayout>
+    </DismissKeyboard>
   );
 }

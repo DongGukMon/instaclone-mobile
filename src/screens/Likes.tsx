@@ -49,7 +49,7 @@ const FollowBtn = styled.TouchableOpacity`
 export default function Likes() {
   const {
     params: {photoId: photoId},
-  } = useRoute();
+  } = useRoute<any>();
 
   const {data, loading} = useQuery(SEE_PHOTO_LIKES, {variables: {id: photoId}});
 

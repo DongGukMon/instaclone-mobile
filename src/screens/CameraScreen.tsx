@@ -3,10 +3,9 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   View,
   Dimensions,
-  ActivityIndicator,
   StatusBar,
   TouchableOpacity,
-  ImageBackground,
+  Platform,
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -91,7 +90,10 @@ export default function CameraScreen() {
 
     //안드로이드 에뮬레이터 문제로 takePhoto가 동작하지 않기 때문에
     //개발단계에서는 takeSnapshot으로 대체
-    const photo = await camera.current.takeSnapshot({});
+    const photo =
+      Platform.OS === 'ios'
+        ? await camera.current.takePhoto()
+        : await camera.current.takeSnapshot({});
 
     setTakedPhoto(`file://${photo.path}`);
   };
