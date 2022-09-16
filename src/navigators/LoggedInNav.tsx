@@ -12,6 +12,9 @@ import styled from 'styled-components/native';
 import Upload from '../screens/Upload';
 import {createStackNavigator} from '@react-navigation/stack';
 import TabsNav from './TabsNav';
+import CameraScreen from '../screens/CameraScreen';
+import Album from '../screens/Album';
+import HeaderRight from '../components/camera/HeaderRight';
 
 const Stack = createStackNavigator();
 
@@ -24,13 +27,33 @@ export default function LoggedInNav() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Upload"
-        component={Upload}
+        name="CameraScreen"
+        component={CameraScreen}
         options={{
           title: '',
           headerBackTitleVisible: false,
           headerTintColor: 'white',
           headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="Album"
+        component={Album}
+        options={{
+          title: '',
+          headerBackTitleVisible: false,
+          headerTintColor: 'white',
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="Upload"
+        component={Upload}
+        options={{
+          presentation: 'card',
+          title: 'Upload',
+          headerBackTitleVisible: false,
+          headerTintColor: 'white',
         }}
       />
     </Stack.Navigator>

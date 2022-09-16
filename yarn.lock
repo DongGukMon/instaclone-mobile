@@ -1138,6 +1138,11 @@
   dependencies:
     merge-options "^3.0.4"
 
+"@react-native-camera-roll/camera-roll@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-5.0.2.tgz#299bcd25fc51c1e8564808e744439bf7761286af"
+  integrity sha512-5gBol4mHjw9u1hUQzYWWdnB+uYgjuBd+adLQfJWhE6yv7rNFb+Noi872bYLyzBb8ayaVAbp/EtlxiG1lWY/IyA==
+
 "@react-native-community/cli-clean@^8.0.4":
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-clean/-/cli-clean-8.0.4.tgz#97e16a20e207b95de12e29b03816e8f2b2c80cc7"
@@ -6153,6 +6158,11 @@ react-native-gradle-plugin@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.7.tgz#96602f909745239deab7b589443f14fce5da2056"
   integrity sha512-+4JpbIx42zGTONhBTIXSyfyHICHC29VTvhkkoUOJAh/XHPEixpuBduYgf6Y4y9wsN1ARlQhBBoptTvXvAFQf5g==
+
+react-native-permissions@^3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.6.1.tgz#73adcc1cef8cd57a9ef167b4507405f4ff5749c4"
+  integrity sha512-fzPpPQXeD34inUccqtoResSwYubfrwUguP4qrVUUv8+KSMjYSaHGoS5HaIJLZHlN9gO+TvLJZ2L5ZljTsb6qnQ==
 
 react-native-safe-area-context@^4.3.3:
   version "4.3.3"

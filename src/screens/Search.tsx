@@ -45,6 +45,13 @@ const SearchBox = (
   };
 
   return (
+    // <View
+    //   style={{
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     width: width,
+    //     backgroundColor: 'tomato',
+    //   }}>
     <TextInput
       style={{
         backgroundColor: 'white',
@@ -63,6 +70,7 @@ const SearchBox = (
       onChangeText={(text: string) => setValue('keyword', text)}
       onSubmitEditing={handleSubmit(onValid)}
     />
+    /* </View> */
   );
 };
 

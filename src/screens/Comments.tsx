@@ -9,20 +9,6 @@ import Comment from '../components/feed/Comment';
 import {client} from '../apollo';
 import {colors} from '../colors';
 
-// id: Int!
-//     user: User!
-//     userId: Int!
-//     file: String!
-//     caption: String
-//     hashtags: [Hashtag]!
-//     createdAt: String!
-//     updatedAt: String!
-//     likes: Int!
-//     isMine: Boolean!
-//     commentNumber: Int!
-//     comments: [Comment]
-//     isLiked: Boolean!
-
 export const SEE_PHOTO_QUERY = gql`
   query seePhoto($id: Int!) {
     seePhoto(id: $id) {
@@ -47,6 +33,7 @@ export const SEE_PHOTO_QUERY = gql`
 
 const CommentsContainer = styled.View`
   flex: 1;
+  margin-top: 10px;
 `;
 
 const PhotoCaption = styled.View``;
