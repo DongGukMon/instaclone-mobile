@@ -72,7 +72,7 @@ export default function Feed() {
           />
         }
         onEndReached={loadNewPhoto}
-        onEndReachedThreshold={0}
+        onEndReachedThreshold={0.02}
         data={photos}
         renderItem={rendItem}
         keyExtractor={item => item.id}

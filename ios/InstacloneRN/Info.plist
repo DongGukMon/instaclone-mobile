@@ -6,6 +6,8 @@
 <string>사진 업로드를 위해 사진첩 접근 권한이 필요합니다.</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
 <string>사진을 리스트업하고 사용자가 고른 사진을 게시할 수 있도록합니다.</string>
+<key>NSCameraUsageDescription</key>
+<string>$(PRODUCT_NAME) needs access to your Camera.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

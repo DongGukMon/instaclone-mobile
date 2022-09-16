@@ -8,6 +8,7 @@ import {setContext} from '@apollo/client/link/context';
 import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {onError} from '@apollo/client/link/error';
+import {createUploadLink} from 'apollo-upload-client';
 
 const TOKEN = 'token';
 const USER_ID = 'userId';
@@ -52,7 +53,7 @@ export const checkLogIn = async () => {
 
 // export const darkModeVar = makeVar(false);
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: 'http://192.168.1.239:4000/graphql', //physical device일 경우 인터넷 ip를 직접 입력해야함
   // Platform.OS == 'ios'
   //   ? 'http://localhost:4000/graphql'

@@ -54,6 +54,7 @@ export default function LoggedInNav() {
           title: 'Upload',
           headerBackTitleVisible: false,
           headerTintColor: 'white',
+          headerStyle: {backgroundColor: 'black'},
         }}
       />
     </Stack.Navigator>

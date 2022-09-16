@@ -84,6 +84,7 @@ export default function Album() {
   }
 
   const goToUpload = () => {
+    navigation.goBack();
     navigation.navigate('Upload' as never, {uri: selectedPhoto} as never);
   };
 
@@ -109,6 +110,7 @@ export default function Album() {
       },
     } = item;
     const isFocused = uri === selectedPhoto;
+
     return (
       <ImageBackground resizeMode="cover" source={{uri}}>
         <ImageContainer
