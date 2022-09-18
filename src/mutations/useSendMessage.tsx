@@ -53,7 +53,7 @@ const useSendMessage = ({
           __typename: 'Message',
           id,
           payload,
-          read: true,
+          read: false,
           user: author,
         },
       });

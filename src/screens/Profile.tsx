@@ -189,6 +189,7 @@ export default function Profile() {
           <ProfileActions>
             {isMe ? (
               <ActionBtn
+                onPress={() => navigate('EditProfile' as never)}
                 isMe={isMe}
                 style={{backgroundColor: colors.lightGray}}>
                 <FatProfileText style={{color: 'black', opacity: 0.9}}>

@@ -27,3 +27,16 @@ export const PHOTO_FRAGMENT = gql`
     isLiked
   }
 `;
+
+export const MESSAGE_FRAGMENT = gql`
+  fragment MessageFragment on Message {
+    id
+    user {
+      avatar
+      username
+    }
+    payload
+    read
+    createdAt
+  }
+`;

@@ -11,6 +11,7 @@ import Detail from '../screens/Detail';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {logUserOut} from '../apollo';
+import EditProfile from '../screens/EditProfile';
 
 const Stack = createStackNavigator();
 
@@ -79,6 +80,7 @@ export default function SharedStackNav({screenName}: {screenName: string}) {
           },
         }}
       />
+      <Stack.Screen name={'EditProfile'} component={EditProfile} />
       <Stack.Screen name={'Comments'} component={Comments} />
       <Stack.Screen name={'Likes'} component={Likes} />
       <Stack.Screen

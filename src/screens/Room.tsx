@@ -1,10 +1,11 @@
-import {gql, useQuery} from '@apollo/client';
+import {gql, useMutation, useQuery} from '@apollo/client';
 import {useRoute} from '@react-navigation/native';
-import React from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {IsAny, useForm} from 'react-hook-form';
 import {
   FlatList,
   KeyboardAvoidingView,
+  Platform,
   TextInput,
   TouchableOpacity,
   View,
@@ -12,8 +13,10 @@ import {
 import {createIconSetFromFontello} from 'react-native-vector-icons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
+import {client} from '../apollo';
 import {colors} from '../colors';
 import ScreenLayout from '../components/ScreenLayout';
+import {MESSAGE_FRAGMENT} from '../fragments';
 import useUser from '../hooks/me';
 import useSendMessage from '../mutations/useSendMessage';
 
@@ -31,6 +34,25 @@ const SEE_ROOM_QUERY = gql`
         read
         createdAt
       }
+    }
+  }
+`;
+
+const ROOM_UPDATE_SUBSCRIPTION = gql`
+  subscription roomUpdates($id: Int!) {
+    roomUpdates(id: $id) {
+      ...MessageFragment
+    }
+  }
+  ${MESSAGE_FRAGMENT}
+`;
+
+const READ_MESSAGE_MUTATION = gql`
+  mutation readMessage($id: Int!) {
+    readMessage(id: $id) {
+      ok
+      error
+      id
     }
   }
 `;
@@ -112,21 +134,108 @@ export default function Room() {
   const {watch, getValues, setValue} = useForm();
   const {user} = useUser();
 
-  const {sendMessageMutation} = useSendMessage({
+  const {sendMessageMutation, loading: sending} = useSendMessage({
     author: user,
     roomId,
     setValue,
     getValues,
   });
 
-  const {data, loading} = useQuery(SEE_ROOM_QUERY, {
+  const {data, loading, subscribeToMore} = useQuery(SEE_ROOM_QUERY, {
     variables: {id: roomId},
   });
 
-  const _renderItem = ({item: message}: any) => {
+  const readMessageUpdate = (
+    cache: any,
+    {
+      data: {
+        readMessage: {ok, id, error},
+      },
+    }: any,
+  ) => {
+    if (ok) {
+      cache.modify({
+        id: `Message:${id}`,
+        fields: {
+          read: (prev: any) => true,
+        },
+      });
+      cache.modify({
+        id: `Room:${roomId}`,
+        fields: {
+          unreadTotal: () => 0,
+        },
+      });
+    } else if (error) {
+      console.log(error);
+    }
+  };
+
+  const [readMessageMutation] = useMutation(READ_MESSAGE_MUTATION, {
+    update: readMessageUpdate,
+  });
+
+  const updateRoomQuery = (
+    _: any,
+    {
+      subscriptionData: {
+        data: {roomUpdates: subData},
+      },
+    }: any,
+  ) => {
+    if (subData?.user?.username !== user?.username) {
+      client.cache.modify({
+        id: `Room:${roomId}`,
+        fields: {
+          messages: (prev: any) => {
+            return [...prev, {__ref: `Message:${subData?.id}`}];
+          },
+          unreadTotal: (prev: number) => {
+            return prev + 1;
+          },
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    subscribeToMore({
+      document: ROOM_UPDATE_SUBSCRIPTION,
+      variables: {id: roomId},
+      updateQuery: updateRoomQuery,
+    });
+
+    client.cache.modify({
+      id: `Room:${roomId}`,
+      fields: {
+        unreadTotal: () => 0,
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!loading && data?.seeRoom?.messages?.length !== 0) {
+      data?.seeRoom?.messages?.map(
+        (item: {read: boolean; user: {username: string}; id: number}) => {
+          const isMe = talkingTo !== item.user.username;
+          if (!item.read && !isMe) {
+            readMessageMutation({variables: {id: item.id}});
+          }
+        },
+      );
+    }
+  }, [data]);
+
+  const _renderItem = ({item: message, index}: any) => {
+    if (loading) {
+      return <View />;
+    }
+
     const {
       user: {avatar, username},
       payload,
+      read,
+      id,
     } = message;
     const isMe = talkingTo !== username;
 
@@ -146,11 +255,11 @@ export default function Room() {
   };
 
   return (
-    <ScreenLayout>
+    <ScreenLayout loading={loading}>
       <KeyboardAvoidingView
         style={{flex: 1}}
-        behavior="padding"
-        keyboardVerticalOffset={100}>
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={70}>
         <Container>
           <FlatList
             data={data?.seeRoom?.messages?.slice().reverse()}
@@ -178,7 +287,7 @@ export default function Room() {
             }
           />
           <TouchableOpacity
-            disabled={!watch('message')}
+            disabled={!watch('message') || sending}
             onPress={() =>
               sendMessageMutation({
                 variables: {
@@ -190,7 +299,9 @@ export default function Room() {
             <Icon
               name="send"
               size={26}
-              color={watch('message') ? 'white' : 'rgba(255,255,255,0.5)'}
+              color={
+                watch('message') || sending ? 'white' : 'rgba(255,255,255,0.5)'
+              }
             />
           </TouchableOpacity>
         </InputContainer>

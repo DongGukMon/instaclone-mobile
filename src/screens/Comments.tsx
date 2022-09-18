@@ -1,7 +1,7 @@
 import {gql, useQuery} from '@apollo/client';
 import {useRoute} from '@react-navigation/native';
 import React, {useEffect} from 'react';
-import {FlatList, Image, Text, View} from 'react-native';
+import {FlatList, Image, KeyboardAvoidingView, Text, View} from 'react-native';
 import styled from 'styled-components/native';
 import CommentInput from '../components/feed/commentInput';
 import ScreenLayout from '../components/ScreenLayout';
@@ -86,23 +86,29 @@ export default function Comments() {
 
   return (
     <ScreenLayout>
-      <CommentsContainer>
-        <PhotoCaption>
-          <Comment
-            isCaption={true}
-            payload={data?.seePhoto?.caption}
-            username={data?.seePhoto?.user?.username}
-            avatar={data?.seePhoto?.user?.avatar}
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior="padding"
+        keyboardVerticalOffset={100}>
+        <CommentsContainer>
+          <PhotoCaption>
+            <Comment
+              isCaption={true}
+              payload={data?.seePhoto?.caption}
+              username={data?.seePhoto?.user?.username}
+              avatar={data?.seePhoto?.user?.avatar}
+            />
+          </PhotoCaption>
+          <Separator />
+          <FlatList
+            data={data?.seePhoto?.comments?.slice().reverse()}
+            keyExtractor={item => item.id + ''}
+            renderItem={_renderItem}
+            inverted={true}
           />
-        </PhotoCaption>
-        <Separator />
-        <FlatList
-          data={data?.seePhoto?.comments}
-          keyExtractor={item => item.id + ''}
-          renderItem={_renderItem}
-        />
-      </CommentsContainer>
-      <CommentInput inputName="comment" photoId={params?.photoId} />
+        </CommentsContainer>
+        <CommentInput inputName="comment" photoId={params?.photoId} />
+      </KeyboardAvoidingView>
     </ScreenLayout>
   );
 }

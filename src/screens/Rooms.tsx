@@ -57,7 +57,6 @@ export default function Rooms() {
           data={data?.seeRooms}
           renderItem={_renderItem}
           keyExtractor={item => item.id + ''}
-          ItemSeparatorComponent={() => <Separator />}
         />
       </View>
     </ScreenLayout>
