@@ -15,6 +15,7 @@ import TabsNav from './TabsNav';
 import CameraScreen from '../screens/CameraScreen';
 import Album from '../screens/Album';
 import HeaderRight from '../components/camera/HeaderRight';
+import MessageNav from './MessageNav';
 
 const Stack = createStackNavigator();
 
@@ -55,6 +56,13 @@ export default function LoggedInNav() {
           headerBackTitleVisible: false,
           headerTintColor: 'white',
           headerStyle: {backgroundColor: 'black'},
+        }}
+      />
+      <Stack.Screen
+        name="Message"
+        component={MessageNav}
+        options={{
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

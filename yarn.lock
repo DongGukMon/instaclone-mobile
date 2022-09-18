@@ -10,7 +10,7 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@apollo/client@^3.6.6", "@apollo/client@^3.6.9":
+"@apollo/client@^3.2.3", "@apollo/client@^3.6.6", "@apollo/client@^3.6.9":
   version "3.6.9"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.6.9.tgz#ad0ee2e3a3c92dbed4acd6917b6158a492739d94"
   integrity sha512-Y1yu8qa2YeaCUBVuw08x8NHenFi0sw2I3KCu7Kw9mDSu86HmmtHJkCAifKVrN2iPgDTW/BbP3EpSV8/EQCcxZA==
@@ -6168,6 +6168,18 @@ react-native-codegen@^0.69.2:
     flow-parser "^0.121.0"
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
+
+react-native-flipper-apollo-devtools@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-flipper-apollo-devtools/-/react-native-flipper-apollo-devtools-0.0.2.tgz#2fea3eb2467efafd005f0362fb37ef742b8fa684"
+  integrity sha512-NX+sWaWgtg4bB8Bw7LrlWlcYj8k0MDnnB0gj4L9a3+tBIsz73Ce6uAaIteL2Un2jZVOG6eKtClqlVf88cJsD9g==
+  dependencies:
+    "@apollo/client" "^3.2.3"
+
+react-native-flipper@^0.164.0:
+  version "0.164.0"
+  resolved "https://registry.yarnpkg.com/react-native-flipper/-/react-native-flipper-0.164.0.tgz#64f6269a86a13a72e30f53ba9f5281d2073a7697"
+  integrity sha512-iJhIe3rqx6okuzBp4AJsTa2b8VRAOGzoLRFx/4HGbaGvu8AurZjz8TTQkhJsRma8dsHN2b6KKZPvGGW3wdWzvA==
 
 react-native-gesture-handler@^2.6.0:
   version "2.6.0"

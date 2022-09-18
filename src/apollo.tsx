@@ -9,6 +9,7 @@ import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {onError} from '@apollo/client/link/error';
 import {createUploadLink} from 'apollo-upload-client';
+import {enableFlipperApolloDevtools} from 'react-native-flipper-apollo-devtools';
 
 const TOKEN = 'token';
 const USER_ID = 'userId';
@@ -54,10 +55,11 @@ export const checkLogIn = async () => {
 // export const darkModeVar = makeVar(false);
 
 const httpLink = createUploadLink({
-  uri: 'http://192.168.1.5:4000/graphql', //physical device일 경우 인터넷 ip를 직접 입력해야함
-  // Platform.OS == 'ios'
-  //   ? 'http://localhost:4000/graphql'
-  //   : 'http://33fe-14-39-174-29.ngrok.io/graphql',
+  uri:
+    // 'http://192.168.1.5:4000/graphql', //physical device일 경우 인터넷 ip를 직접 입력해야함
+    Platform.OS == 'ios'
+      ? 'http://localhost:4000/graphql'
+      : 'http://33fe-14-39-174-29.ngrok.io/graphql',
 });
 
 const onErrorLink = onError(({graphQLErrors, networkError}) => {

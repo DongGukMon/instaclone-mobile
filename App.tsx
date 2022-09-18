@@ -7,6 +7,8 @@ import {checkLogIn, client, isLoggedInVar, setUserData} from './src/apollo';
 import LoggedInNav from './src/navigators/LoggedInNav';
 import Toast from 'react-native-toast-message';
 import {StatusBar} from 'react-native';
+import {enableFlipperApolloDevtools} from 'react-native-flipper-apollo-devtools';
+enableFlipperApolloDevtools(client as any);
 
 const App = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);

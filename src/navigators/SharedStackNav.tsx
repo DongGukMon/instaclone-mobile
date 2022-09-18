@@ -1,17 +1,25 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import React from 'react';
+import React, {useCallback} from 'react';
 import Feed from '../screens/Feed';
 import Notifiactions from '../screens/Notifications';
 import Profile from '../screens/Profile';
 import Search from '../screens/Search';
-import {Image, Text, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Comments from '../screens/Comments';
 import Likes from '../screens/Likes';
 import Detail from '../screens/Detail';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
+import {logUserOut} from '../apollo';
 
 const Stack = createStackNavigator();
 
 export default function SharedStackNav({screenName}: {screenName: string}) {
+  const {navigate} = useNavigation();
+  const goToMessage = useCallback(() => {
+    navigate('Message' as never);
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -31,9 +39,14 @@ export default function SharedStackNav({screenName}: {screenName: string}) {
             headerTitle: () => (
               <Image
                 resizeMode="contain"
-                style={{maxHeight: 30, alignSelf: 'center'}}
+                style={{maxHeight: 30, width: 120, alignSelf: 'center'}}
                 source={require('../assets/logo.png')}
               />
+            ),
+            headerRight: () => (
+              <TouchableOpacity style={{marginRight: 10}} onPress={goToMessage}>
+                <Icon name="send" size={24} color="white" />
+              </TouchableOpacity>
             ),
           }}
         />
@@ -44,7 +57,28 @@ export default function SharedStackNav({screenName}: {screenName: string}) {
       {screenName === 'Notifications' ? (
         <Stack.Screen name={'Notifiactions'} component={Notifiactions} />
       ) : null}
-      <Stack.Screen name={'Profile'} component={Profile} />
+      <Stack.Screen
+        name={'Profile'}
+        component={Profile}
+        options={{
+          headerRight: () => {
+            return (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: 'tomato',
+                  width: 60,
+                  height: 25,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 5,
+                }}
+                onPress={() => logUserOut()}>
+                <Text style={{color: 'white', fontWeight: '600'}}>log out</Text>
+              </TouchableOpacity>
+            );
+          },
+        }}
+      />
       <Stack.Screen name={'Comments'} component={Comments} />
       <Stack.Screen name={'Likes'} component={Likes} />
       <Stack.Screen
