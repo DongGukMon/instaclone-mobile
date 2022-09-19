@@ -15,11 +15,15 @@ const ActionBtn = styled.TouchableOpacity``;
 interface CameraActionsProps {
   goToAlbum: Function;
   children: React.ReactNode;
+  cameraDirection: boolean;
+  setCameraDirection: Function;
 }
 
 export default function CameraActions({
   goToAlbum,
   children,
+  cameraDirection,
+  setCameraDirection,
 }: CameraActionsProps) {
   return (
     <ActionsContainer>
@@ -27,7 +31,7 @@ export default function CameraActions({
         <Icon name="albums" size={30} color="white" />
       </ActionBtn>
       {children}
-      <ActionBtn>
+      <ActionBtn onPress={() => setCameraDirection(!cameraDirection)}>
         <Icon name="camera-reverse" size={30} color="white" />
       </ActionBtn>
     </ActionsContainer>

@@ -66,8 +66,10 @@ export default function CameraScreen() {
   const [takedPhoto, setTakedPhoto] = useState('');
   const [cameraPermission, setCameraPermission] = useState(false);
   const isFocused = useIsFocused();
+
+  const [cameraDirection, setCameraDirection] = useState(false);
   const devices = useCameraDevices();
-  const device = devices.back;
+  const device = cameraDirection ? devices.front : devices.back;
 
   const camera = useRef<Camera>(null);
 
@@ -156,7 +158,10 @@ export default function CameraScreen() {
 
       <ActionsBox>
         {takedPhoto.length === 0 ? (
-          <CameraActions goToAlbum={goToAlbum}>
+          <CameraActions
+            goToAlbum={goToAlbum}
+            setCameraDirection={setCameraDirection}
+            cameraDirection={cameraDirection}>
             <TouchableOpacity
               onPress={() => {
                 takePhoto();
