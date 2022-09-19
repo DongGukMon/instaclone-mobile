@@ -28,6 +28,22 @@ export const PHOTO_FRAGMENT = gql`
   }
 `;
 
+export const ROOM_FRAGEMNT = gql`
+  fragment RoomFragment on Room {
+    id
+    messages {
+      id
+      user {
+        avatar
+        username
+      }
+      payload
+      read
+      createdAt
+    }
+  }
+`;
+
 export const MESSAGE_FRAGMENT = gql`
   fragment MessageFragment on Message {
     id

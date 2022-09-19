@@ -10,32 +10,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {createIconSetFromFontello} from 'react-native-vector-icons';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components/native';
 import {client} from '../apollo';
 import {colors} from '../colors';
 import ScreenLayout from '../components/ScreenLayout';
-import {MESSAGE_FRAGMENT} from '../fragments';
+import {MESSAGE_FRAGMENT, ROOM_FRAGEMNT} from '../fragments';
 import useUser from '../hooks/me';
 import useSendMessage from '../mutations/useSendMessage';
 
 const SEE_ROOM_QUERY = gql`
   query seeRoom($id: Int!) {
     seeRoom(id: $id) {
-      id
-      messages {
-        id
-        user {
-          avatar
-          username
-        }
-        payload
-        read
-        createdAt
-      }
+      ...RoomFragment
     }
   }
+  ${ROOM_FRAGEMNT}
 `;
 
 const ROOM_UPDATE_SUBSCRIPTION = gql`

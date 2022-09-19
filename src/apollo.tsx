@@ -50,6 +50,7 @@ export const logUserOut = async () => {
   await AsyncStorage.multiRemove([TOKEN, USER_ID]);
   isLoggedInVar(false);
   userDataVar(0);
+  client.resetStore();
 };
 
 export const checkLogIn = async () => {
