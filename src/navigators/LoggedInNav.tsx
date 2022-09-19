@@ -22,10 +22,25 @@ const ROOM_UPDATE_SUBSCRIPTION = gql`
 `;
 
 export default function LoggedInNav() {
-  const updateQuery = (result: any) => {
-    console.log(result);
-  };
   const {user} = useUser();
+  const updateRoomQuery = (result: any) => {
+    const message = result?.data?.roomUpdates;
+    console.log(message);
+    if (message?.user?.username !== user?.username) {
+      client.cache.modify({
+        id: `Room:${message?.roomId}`,
+        fields: {
+          messages: (prev: any) => {
+            return [...prev, {__ref: `Message:${message?.id}`}];
+          },
+          unreadTotal: (prev: number) => {
+            return prev + 1;
+          },
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     let subscriptions: any = [];
     if (user && user.rooms.length !== 0) {
@@ -37,7 +52,7 @@ export default function LoggedInNav() {
             query: ROOM_UPDATE_SUBSCRIPTION,
             variables: {id: item.id},
           })
-          .subscribe({next: updateQuery});
+          .subscribe({next: updateRoomQuery});
       });
     }
     return () =>

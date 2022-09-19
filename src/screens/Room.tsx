@@ -141,7 +141,7 @@ export default function Room() {
     getValues,
   });
 
-  const {data, loading, subscribeToMore} = useQuery(SEE_ROOM_QUERY, {
+  const {data, loading} = useQuery(SEE_ROOM_QUERY, {
     variables: {id: roomId},
   });
 
@@ -175,36 +175,7 @@ export default function Room() {
     update: readMessageUpdate,
   });
 
-  const updateRoomQuery = (
-    _: any,
-    {
-      subscriptionData: {
-        data: {roomUpdates: subData},
-      },
-    }: any,
-  ) => {
-    if (subData?.user?.username !== user?.username) {
-      client.cache.modify({
-        id: `Room:${roomId}`,
-        fields: {
-          messages: (prev: any) => {
-            return [...prev, {__ref: `Message:${subData?.id}`}];
-          },
-          unreadTotal: (prev: number) => {
-            return prev + 1;
-          },
-        },
-      });
-    }
-  };
-
   useEffect(() => {
-    // subscribeToMore({
-    //   document: ROOM_UPDATE_SUBSCRIPTION,
-    //   variables: {id: roomId},
-    //   updateQuery: updateRoomQuery,
-    // });
-
     client.cache.modify({
       id: `Room:${roomId}`,
       fields: {
