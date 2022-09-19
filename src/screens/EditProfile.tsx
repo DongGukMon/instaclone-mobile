@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {KeyboardAvoidingView} from 'react-native';
 import styled from 'styled-components/native';
@@ -54,6 +55,9 @@ const ContentContainer = styled.View;
 
 const EditProfile = () => {
   const {user} = useUser();
+  const {navigate} = useNavigation();
+  const goToAlbum = () =>
+    navigate('Album' as never, {from: 'editProfile'} as never);
   return (
     <ScreenLayout>
       <KeyboardAvoidingView
@@ -65,7 +69,7 @@ const EditProfile = () => {
             <AvatarContainer>
               <Avatar source={{uri: user.avatar}} />
             </AvatarContainer>
-            <AvatarChangeBtn>
+            <AvatarChangeBtn onPress={goToAlbum}>
               <AvatarChangeText>프로필 사진 바꾸기</AvatarChangeText>
             </AvatarChangeBtn>
           </Column>

@@ -5,11 +5,13 @@ import styled from 'styled-components/native';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {PERMISSIONS, RESULTS, request} from 'react-native-permissions';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import HeaderLeft from '../components/camera/HeaderLeft';
 import HeaderRight from '../components/camera/HeaderRight';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../colors';
+import useEditProfile from '../mutations/useEditProfile';
+import {ReactNativeFile} from 'apollo-upload-client';
 
 const {width} = Dimensions.get('window');
 
@@ -49,6 +51,7 @@ export default function Album() {
   const [snapshots, setSnapshots] = useState<any>([]);
   const [selectedPhoto, setSelectedPhoto] = useState('');
   const navigation = useNavigation();
+  const {params} = useRoute();
 
   const getSnapshots = async () => {
     const result = await CameraRoll.getPhotos({
@@ -96,9 +99,33 @@ export default function Album() {
     navigation.goBack();
   }, []);
 
+  const {editProfileMutation, loading: editLoading} =
+    useEditProfile(selectedPhoto);
+
+  const excuteEdit = () => {
+    if (!editLoading) {
+      const file = new ReactNativeFile({
+        uri: selectedPhoto,
+        name: selectedPhoto.split('/').toString(),
+        type: 'image/jpg',
+      });
+      navigation.goBack();
+      editProfileMutation({
+        variables: {
+          avatar: file,
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => <HeaderRight onPress={goToUpload} />,
+      headerRight: () =>
+        params ? (
+          <HeaderRight onPress={excuteEdit} text="Edit" />
+        ) : (
+          <HeaderRight onPress={goToUpload} />
+        ),
       headerBackImage: () => <HeaderLeft onPress={goBack} />,
     });
   }, [selectedPhoto]);

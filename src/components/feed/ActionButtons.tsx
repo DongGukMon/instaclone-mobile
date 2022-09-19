@@ -93,7 +93,6 @@ function ActionButtons({isLiked, likes, id}: ActionButtonsProps) {
             isLiked={isLiked}
           />
           <PhotoIcon iconName="chatbubbles" onPress={goToComments} />
-          <PhotoIcon iconName="send" onPress={useCallback(() => {}, [])} />
         </BaseContainer>
         <View>
           <PhotoIcon

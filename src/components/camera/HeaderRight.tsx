@@ -19,14 +19,16 @@ export const NextBtn = styled.TouchableOpacity`
 export default function HeaderRight({
   onPress,
   isTaked = true,
+  text = 'NEXT',
 }: {
   onPress: Function;
   isTaked?: boolean;
+  text?: string;
 }) {
   if (isTaked) {
     return (
       <NextBtn onPress={onPress}>
-        <FatText>NEXT</FatText>
+        <FatText>{text}</FatText>
       </NextBtn>
     );
   } else {
