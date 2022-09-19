@@ -1,5 +1,5 @@
 import {FlatList, RefreshControl} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {gql, useQuery} from '@apollo/client';
 import ScreenLayout from '../components/ScreenLayout';
 import Photo from '../components/feed/Photo';

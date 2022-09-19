@@ -8,6 +8,9 @@ const ME_QUERY = gql`
       id
       username
       avatar
+      rooms {
+        id
+      }
     }
   }
 `;
@@ -22,10 +25,11 @@ const useUser = () => {
   const user = data?.me;
 
   useEffect(() => {
-    if (user === null) {
+    if (!hasToken && user === null) {
+      console.log('log out');
       logUserOut();
     }
-    if (!loading && Boolean(userId) && user?.id !== userId) {
+    if (hasToken && !loading && Boolean(userId) && user?.id !== userId) {
       refetch();
       console.log('me refetch!');
     }

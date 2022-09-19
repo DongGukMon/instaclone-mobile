@@ -1,25 +1,52 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Feed from '../screens/Feed';
-import React from 'react';
-import Search from '../screens/Search';
-import Notifiactions from '../screens/Notifications';
-import Profile from '../screens/Profile';
-import {Image, View} from 'react-native';
-import TabIcon from '../components/nav/TabIcon';
-import SharedStackNav from './SharedStackNav';
-import useUser from '../hooks/me';
-import styled from 'styled-components/native';
+import React, {useEffect} from 'react';
 import Upload from '../screens/Upload';
 import {createStackNavigator} from '@react-navigation/stack';
 import TabsNav from './TabsNav';
 import CameraScreen from '../screens/CameraScreen';
 import Album from '../screens/Album';
-import HeaderRight from '../components/camera/HeaderRight';
 import MessageNav from './MessageNav';
+import {MESSAGE_FRAGMENT} from '../fragments';
+import {gql, useSubscription} from '@apollo/client';
+import {client} from '../apollo';
+import useUser from '../hooks/me';
 
 const Stack = createStackNavigator();
 
+const ROOM_UPDATE_SUBSCRIPTION = gql`
+  subscription roomUpdates($id: Int!) {
+    roomUpdates(id: $id) {
+      ...MessageFragment
+    }
+  }
+  ${MESSAGE_FRAGMENT}
+`;
+
 export default function LoggedInNav() {
+  const updateQuery = (result: any) => {
+    console.log(result);
+  };
+  const {user} = useUser();
+  useEffect(() => {
+    let subscriptions: any = [];
+    if (user && user.rooms.length !== 0) {
+      console.log(user.username);
+      subscriptions = user.rooms.map((item: {id: number}) => {
+        console.log(item.id);
+        return client
+          .subscribe({
+            query: ROOM_UPDATE_SUBSCRIPTION,
+            variables: {id: item.id},
+          })
+          .subscribe({next: updateQuery});
+      });
+    }
+    return () =>
+      subscriptions.map((item: any) => {
+        console.log('cleanup: ', user.username);
+        item.unsubscribe();
+      });
+  }, [user]);
+
   return (
     <Stack.Navigator screenOptions={{presentation: 'modal'}}>
       <Stack.Screen

@@ -23,6 +23,29 @@ const App = () => {
     }
   }, []);
 
+  // const updateRoomQuery = (
+  //   _: any,
+  //   {
+  //     subscriptionData: {
+  //       data: {roomUpdates: subData},
+  //     },
+  //   }: any,
+  // ) => {
+  //   if (subData?.user?.username !== user?.username) {
+  //     client.cache.modify({
+  //       id: `Room:${roomId}`,
+  //       fields: {
+  //         messages: (prev: any) => {
+  //           return [...prev, {__ref: `Message:${subData?.id}`}];
+  //         },
+  //         unreadTotal: (prev: number) => {
+  //           return prev + 1;
+  //         },
+  //       },
+  //     });
+  //   }
+  // };
+
   return (
     <>
       <ApolloProvider client={client}>

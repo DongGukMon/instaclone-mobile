@@ -36,8 +36,8 @@ export default function Rooms() {
   } = useUser();
 
   const _renderItem = ({item: room}: any) => {
-    const notMe = room?.users.find(
-      (user: {username: string}) => user.username !== meName,
+    const notMe = room?.users?.find(
+      (user: {username: string}) => user?.username !== meName,
     );
 
     return (

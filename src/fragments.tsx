@@ -31,6 +31,7 @@ export const PHOTO_FRAGMENT = gql`
 export const MESSAGE_FRAGMENT = gql`
   fragment MessageFragment on Message {
     id
+    roomId
     user {
       avatar
       username

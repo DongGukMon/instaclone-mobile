@@ -1,4 +1,4 @@
-import {gql, useMutation, useQuery} from '@apollo/client';
+import {gql, useMutation, useQuery, useSubscription} from '@apollo/client';
 import {useRoute} from '@react-navigation/native';
 import React, {Fragment, useEffect} from 'react';
 import {IsAny, useForm} from 'react-hook-form';
@@ -157,7 +157,7 @@ export default function Room() {
       cache.modify({
         id: `Message:${id}`,
         fields: {
-          read: (prev: any) => true,
+          read: () => true,
         },
       });
       cache.modify({
@@ -199,11 +199,11 @@ export default function Room() {
   };
 
   useEffect(() => {
-    subscribeToMore({
-      document: ROOM_UPDATE_SUBSCRIPTION,
-      variables: {id: roomId},
-      updateQuery: updateRoomQuery,
-    });
+    // subscribeToMore({
+    //   document: ROOM_UPDATE_SUBSCRIPTION,
+    //   variables: {id: roomId},
+    //   updateQuery: updateRoomQuery,
+    // });
 
     client.cache.modify({
       id: `Room:${roomId}`,
