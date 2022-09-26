@@ -23,6 +23,7 @@ interface SeeProfileTypes {
   totalFollowers: number;
   isMe: boolean;
   isFollowing: boolean;
+  totalPhotos: number;
   photos: [
     {
       id: number;
@@ -44,6 +45,7 @@ const SEE_PROFILE_QUERY = gql`
       totalFollowers
       isMe
       isFollowing
+      totalPhotos
       photos(page: $page) {
         id
         file
@@ -136,6 +138,7 @@ export default function Profile() {
     isMe,
     isFollowing,
     photos,
+    totalPhotos,
   }: SeeProfileTypes = data?.seeProfile ? data.seeProfile : {};
 
   const _renderItem = ({item}: {item: {id: number; file: string}}) => {
@@ -170,7 +173,7 @@ export default function Profile() {
                 padding: 10,
               }}>
               <Counter>
-                <FatProfileText>{photos?.length}</FatProfileText>
+                <FatProfileText>{totalPhotos}</FatProfileText>
                 <View style={{height: 3}} />
                 <ProfileText>게시물</ProfileText>
               </Counter>

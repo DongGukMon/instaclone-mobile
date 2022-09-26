@@ -2,24 +2,17 @@ import {gql, useMutation} from '@apollo/client';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {useForm} from 'react-hook-form';
-import {
-  Dimensions,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
 import styled from 'styled-components/native';
-import {colors} from '../colors';
+
 import ScreenLayout from '../components/ScreenLayout';
 import {ReactNativeFile} from 'apollo-upload-client';
-import HeaderRight, {FatText, NextBtn} from '../components/camera/HeaderRight';
+import {FatText, NextBtn} from '../components/camera/HeaderRight';
 import DismissKeyboard from '../components/DismissKeyboard';
 import {PHOTO_FRAGMENT} from '../fragments';
 
 const PostImage = styled.Image`
   width: 100%;
   height: 300px;
-  /* margin-top: 30px; */
 `;
 
 const CaptionInput = styled.TextInput`
@@ -65,6 +58,7 @@ export default function Upload() {
   const uploadPhotoUpload = (cache: any, data: any) => {
     if (data) {
       const id = `Photo:${data?.data?.uploadPhoto?.id}`;
+      const meId = `User:${data?.data?.uploadPhoto?.user?.id}`;
 
       cache.writeFragment({
         id,
@@ -77,6 +71,13 @@ export default function Upload() {
           seeFeed: (prev: any) => {
             return [{__ref: id}, ...prev];
           },
+        },
+      });
+
+      cache.modify({
+        id: meId,
+        fields: {
+          totalPhotos: (prev: number) => prev + 1,
         },
       });
       navigation.navigate('TabsNav' as never);
