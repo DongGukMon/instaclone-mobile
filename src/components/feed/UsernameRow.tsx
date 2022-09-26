@@ -11,7 +11,6 @@ interface UsernameRowProps {
 
 const UsernameRowContainer = styled.View`
   flex-direction: row;
-  /* justify-content: flex-start; */
   justify-content: space-between;
   align-items: center;
   padding: 10px;
