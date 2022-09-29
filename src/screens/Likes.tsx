@@ -9,6 +9,7 @@ import UsernameRow from '../components/feed/UsernameRow';
 import {colors} from '../colors';
 import useUser from '../hooks/me';
 import useToggleMutation from '../mutations/useToggleMutation';
+import {FollowBtn, FollowText} from '../components/shared';
 
 interface PhotoTypes {
   avatar?: string;
@@ -29,22 +30,6 @@ const SEE_PHOTO_LIKES = gql`
     }
   }
 `;
-
-const FollowText = styled.Text`
-  color: ${(props: any) => (props.isFollowing ? 'black' : 'white')};
-  font-weight: 600;
-`;
-
-const FollowBtn = styled.TouchableOpacity`
-  background-color: ${(props: any) =>
-    props.isFollowing ? colors.lightGray : colors.blue};
-  width: 80px;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-`;
-
 export default function Likes() {
   const {
     params: {photoId: photoId},

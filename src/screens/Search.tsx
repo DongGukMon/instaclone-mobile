@@ -1,6 +1,6 @@
 import {gql, useLazyQuery} from '@apollo/client';
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
   View,
@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
-import {logUserOut} from '../apollo';
 import DismissKeyboard from '../components/DismissKeyboard';
-
-import ScreenLayout from '../components/ScreenLayout';
+import UsernameRow from '../components/feed/UsernameRow';
+import {FollowBtn, FollowText} from '../components/shared';
+import useToggleMutation from '../mutations/useToggleMutation';
 
 const {width} = Dimensions.get('window');
 
@@ -29,29 +29,60 @@ const SEARCH_PHOTOS_QUERY = gql`
   }
 `;
 
-const PhotosContainer = styled.View`
-  padding: 40px 10px 10px 10px;
+const SEARCH_USERS_QUERY = gql`
+  query searchUsers($keyword: String!, $lastId: Int) {
+    searchUsers(keyword: $keyword, lastId: $lastId) {
+      id
+      username
+      avatar
+      isFollowing
+      isMe
+    }
+  }
+`;
+
+const ResultContainer = styled.View`
+  padding: 10px;
   flex: 1;
   background-color: black;
 `;
 
+const SearchTypeText = styled.Text`
+  color: ${(props: {isFocus: boolean}) =>
+    props.isFocus ? 'white' : 'rgba(255,255,255,0.7)'};
+  font-size: 20px;
+  font-weight: ${(props: {isFocus: boolean}) => (props.isFocus ? 600 : 400)};
+  margin-bottom: 10px;
+`;
+
+const SearchTypeContainer = styled.View`
+  height: 50px;
+  flex-direction: row;
+  margin-top: 10px;
+`;
+
+const SearchTypeBtn = styled.TouchableOpacity`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  border-bottom-width: 2px;
+
+  border-color: ${(props: {isFocus: boolean}) =>
+    props.isFocus ? 'white' : 'black'};
+`;
+
 const SearchBox = (
   searchPhotosQuery: Function,
+  searchUsersQuery: Function,
   setValue: Function,
   handleSubmit: Function,
 ) => {
   const onValid = (data: any) => {
     searchPhotosQuery({variables: {keyword: data?.keyword, page: 1}});
+    searchUsersQuery({variables: {keyword: data?.keyword}});
   };
 
   return (
-    // <View
-    //   style={{
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     width: width,
-    //     backgroundColor: 'tomato',
-    //   }}>
     <TextInput
       style={{
         backgroundColor: 'white',
@@ -70,7 +101,6 @@ const SearchBox = (
       onChangeText={(text: string) => setValue('keyword', text)}
       onSubmitEditing={handleSubmit(onValid)}
     />
-    /* </View> */
   );
 };
 
@@ -78,15 +108,23 @@ export default function Search() {
   const {navigate, setOptions} = useNavigation();
   const {setValue, handleSubmit, register} = useForm();
 
+  const [focusItem, setFocusItem] = useState('users');
+
   const [searchPhotosQuery, {data, loading, called}] =
     useLazyQuery(SEARCH_PHOTOS_QUERY);
+
+  const [
+    searchUsersQuery,
+    {data: userData, loading: userLoading, called: userCalled},
+  ] = useLazyQuery(SEARCH_USERS_QUERY);
 
   useEffect(() => {
     register('keyword', {
       required: true,
     });
     setOptions({
-      headerTitle: () => SearchBox(searchPhotosQuery, setValue, handleSubmit),
+      headerTitle: () =>
+        SearchBox(searchPhotosQuery, searchUsersQuery, setValue, handleSubmit),
     });
   }, []);
 
@@ -103,10 +141,90 @@ export default function Search() {
     );
   };
 
+  const {toggleLikes} = useToggleMutation();
+
+  const userRenderItem = (item: {
+    item: {
+      username: string;
+      avatar?: string;
+      id: number;
+      isFollowing: boolean;
+      isMe: boolean;
+    };
+  }) => {
+    const {username, avatar, isMe, isFollowing} = item?.item;
+    return (
+      <View style={{height: 70}}>
+        <UsernameRow username={username} avatar={avatar}>
+          {!isMe && (
+            <FollowBtn
+              isFollowing={isFollowing}
+              onPress={() => toggleLikes(username, isFollowing)}>
+              <FollowText isFollowing={isFollowing}>
+                {isFollowing ? 'Unfollow' : 'Follow'}
+              </FollowText>
+            </FollowBtn>
+          )}
+        </UsernameRow>
+      </View>
+    );
+  };
+
   return (
     <DismissKeyboard>
-      {called ? (
-        loading ? (
+      <View style={{backgroundColor: 'black', flex: 1}}>
+        <SearchTypeContainer>
+          <SearchTypeBtn
+            isFocus={focusItem === 'users'}
+            onPress={() => setFocusItem('users')}>
+            <SearchTypeText isFocus={focusItem === 'users'}>
+              Users
+            </SearchTypeText>
+          </SearchTypeBtn>
+          <SearchTypeBtn
+            isFocus={focusItem === 'photos'}
+            onPress={() => setFocusItem('photos')}>
+            <SearchTypeText isFocus={focusItem === 'photos'}>
+              Photos
+            </SearchTypeText>
+          </SearchTypeBtn>
+        </SearchTypeContainer>
+        {called && userCalled ? (
+          loading || userLoading ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flex: 1,
+                backgroundColor: 'black',
+              }}>
+              <ActivityIndicator color="white" />
+              <Text style={{color: 'white', marginTop: 10}}>검색중입니다.</Text>
+            </View>
+          ) : focusItem === 'users' ? (
+            <ResultContainer>
+              <FlatList
+                contentContainerStyle={{flex: 1}}
+                data={userData?.searchUsers}
+                keyExtractor={item => item.id + ''}
+                renderItem={userRenderItem}
+              />
+            </ResultContainer>
+          ) : (
+            <ResultContainer>
+              <FlatList
+                contentContainerStyle={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                }}
+                data={data?.searchPhotos}
+                keyExtractor={item => item.id + ''}
+                renderItem={_renderItem}
+              />
+            </ResultContainer>
+          )
+        ) : (
           <View
             style={{
               justifyContent: 'center',
@@ -114,31 +232,10 @@ export default function Search() {
               flex: 1,
               backgroundColor: 'black',
             }}>
-            <ActivityIndicator color="white" />
-            <Text style={{color: 'white', marginTop: 10}}>검색중입니다.</Text>
+            <Text style={{color: 'white'}}>검색어를 입력해주세요</Text>
           </View>
-        ) : (
-          <PhotosContainer>
-            <FlatList
-              contentContainerStyle={{flex: 1}}
-              data={data?.searchPhotos}
-              keyExtractor={item => item.id + ''}
-              renderItem={_renderItem}
-              numColumns={3}
-            />
-          </PhotosContainer>
-        )
-      ) : (
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            flex: 1,
-            backgroundColor: 'black',
-          }}>
-          <Text style={{color: 'white'}}>검색어를 입력해주세요</Text>
-        </View>
-      )}
+        )}
+      </View>
     </DismissKeyboard>
   );
 }
