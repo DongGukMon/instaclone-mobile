@@ -6,6 +6,7 @@
 - react-native CLI
 - typescript
 - apollo client
+- reactive variables / apollo client cache
 - styled component
 
 ## 구현 범위
