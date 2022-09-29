@@ -9,6 +9,7 @@ import useUser from '../hooks/me';
 import useToggleMutation from '../mutations/useToggleMutation';
 import {logUserOut} from '../apollo';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import useStartDM from '../mutations/useStartDM';
 
 const {width} = Dimensions.get('window');
 
@@ -31,6 +32,20 @@ interface SeeProfileTypes {
     },
   ];
 }
+
+const SEE_ROOMS_QUERY = gql`
+  query seeRooms {
+    seeRooms {
+      id
+      users {
+        username
+        avatar
+        id
+      }
+      unreadTotal
+    }
+  }
+`;
 
 const SEE_PROFILE_QUERY = gql`
   query seeProfile($username: String!, $page: Int!) {
@@ -127,6 +142,35 @@ export default function Profile() {
     variables: {username: profileUsername, page: 1},
   });
 
+  const {startDMMutation, loading: makingRoom} = useStartDM({
+    author: user,
+    talkingTo: data?.seeProfile,
+  });
+
+  const {data: roomsData} = useQuery(SEE_ROOMS_QUERY);
+
+  const goToDM = () => {
+    let isRoomExist = false;
+    roomsData?.seeRooms?.map((room: any) => {
+      if (isRoomExist) {
+        return;
+      }
+      if (
+        room.users[0].username === params?.username ||
+        room.users[1].username === params?.username
+      ) {
+        isRoomExist = true;
+        navigate(
+          'Room' as never,
+          {roomId: room.id, talkingTo: params?.username} as never,
+        );
+      }
+    });
+    if (!isRoomExist) {
+      startDMMutation();
+    }
+  };
+
   useEffect(() => {
     setOptions({title: profileUsername});
   }, []);
@@ -213,9 +257,8 @@ export default function Profile() {
                   </FatProfileText>
                 </ActionBtn>
                 <ActionBtn
-                  isMe={isMe}
-                  isFollowing={isFollowing}
-                  style={{backgroundColor: colors.lightGray}}>
+                  style={{backgroundColor: colors.lightGray}}
+                  onPress={goToDM}>
                   <FatProfileText style={{color: 'black', opacity: 0.9}}>
                     Message
                   </FatProfileText>

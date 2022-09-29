@@ -21,16 +21,8 @@ const SEE_ROOMS_QUERY = gql`
   }
 `;
 
-const Separator = styled.View`
-  width: 95%;
-  background-color: ${colors.lightGray};
-  height: 0.3px;
-  align-self: center;
-`;
-
 export default function Rooms() {
-  const {height} = useWindowDimensions();
-  const {data, loading} = useQuery(SEE_ROOMS_QUERY);
+  const {data} = useQuery(SEE_ROOMS_QUERY);
   const {
     user: {username: meName},
   } = useUser();
