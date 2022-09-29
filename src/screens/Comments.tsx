@@ -1,7 +1,7 @@
 import {gql, useQuery} from '@apollo/client';
 import {useRoute} from '@react-navigation/native';
-import React, {useEffect} from 'react';
-import {FlatList, Image, KeyboardAvoidingView, Text, View} from 'react-native';
+import React from 'react';
+import {FlatList, KeyboardAvoidingView, Platform} from 'react-native';
 import styled from 'styled-components/native';
 import CommentInput from '../components/feed/commentInput';
 import ScreenLayout from '../components/ScreenLayout';
@@ -88,8 +88,8 @@ export default function Comments() {
     <ScreenLayout>
       <KeyboardAvoidingView
         style={{flex: 1}}
-        behavior="padding"
-        keyboardVerticalOffset={100}>
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={70}>
         <CommentsContainer>
           <PhotoCaption>
             <Comment

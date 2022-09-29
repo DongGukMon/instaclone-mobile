@@ -63,7 +63,7 @@ export const checkLogIn = async () => {
 // export const darkModeVar = makeVar(false);
 
 const httpLink = createUploadLink({
-  uri: 'http://172.30.35.237:4000/graphql',
+  uri: 'http://192.168.1.6:4000/graphql',
 });
 
 const onErrorLink = onError(({graphQLErrors, networkError}) => {
@@ -87,7 +87,7 @@ const authLink = setContext(async (_, {headers}) => {
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://172.30.35.237:4000/graphql',
+    url: 'ws://192.168.1.6:4000/graphql',
     connectionParams: async () => {
       const token = await AsyncStorage.getItem(TOKEN);
       return {authorization: token ? token : ''};
