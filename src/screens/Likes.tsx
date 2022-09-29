@@ -32,7 +32,6 @@ const SEE_PHOTO_LIKES = gql`
 
 const FollowText = styled.Text`
   color: ${(props: any) => (props.isFollowing ? 'black' : 'white')};
-  opacity: ${(props: any) => props.isFollowing && 0.8};
   font-weight: 600;
 `;
 
