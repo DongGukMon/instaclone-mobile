@@ -63,11 +63,7 @@ export const checkLogIn = async () => {
 // export const darkModeVar = makeVar(false);
 
 const httpLink = createUploadLink({
-  uri: 'http://172.30.88.67:4000/graphql',
-  // 'http://192.168.1.5:4000/graphql', //physical device일 경우 인터넷 ip를 직접 입력해야함
-  // Platform.OS == 'ios'
-  //   ? 'http://localhost:4000/graphql'
-  //   : 'http://33fe-14-39-174-29.ngrok.io/graphql',
+  uri: 'http://172.30.35.237:4000/graphql',
 });
 
 const onErrorLink = onError(({graphQLErrors, networkError}) => {
@@ -91,7 +87,7 @@ const authLink = setContext(async (_, {headers}) => {
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://172.30.88.67:4000/graphql',
+    url: 'ws://172.30.35.237:4000/graphql',
     connectionParams: async () => {
       const token = await AsyncStorage.getItem(TOKEN);
       return {authorization: token ? token : ''};

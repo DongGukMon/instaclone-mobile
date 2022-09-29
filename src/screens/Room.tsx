@@ -29,15 +29,6 @@ const SEE_ROOM_QUERY = gql`
   ${ROOM_FRAGEMNT}
 `;
 
-const ROOM_UPDATE_SUBSCRIPTION = gql`
-  subscription roomUpdates($id: Int!) {
-    roomUpdates(id: $id) {
-      ...MessageFragment
-    }
-  }
-  ${MESSAGE_FRAGMENT}
-`;
-
 const READ_MESSAGE_MUTATION = gql`
   mutation readMessage($id: Int!) {
     readMessage(id: $id) {
@@ -188,7 +179,7 @@ export default function Room() {
     }
   }, [data]);
 
-  const _renderItem = ({item: message, index}: any) => {
+  const _renderItem = ({item: message}: any) => {
     if (loading) {
       return <View />;
     }
@@ -216,6 +207,18 @@ export default function Room() {
     );
   };
 
+  let messageList: any = [];
+  const uniqueId: [number?] = [];
+  data?.seeRoom?.messages
+    ?.slice()
+    .reverse()
+    .map((item: any) => {
+      if (!uniqueId.includes(item?.id)) {
+        uniqueId.push(item.id);
+        messageList.push(item);
+      }
+    });
+
   return (
     <ScreenLayout loading={loading}>
       <KeyboardAvoidingView
@@ -224,7 +227,7 @@ export default function Room() {
         keyboardVerticalOffset={70}>
         <Container>
           <FlatList
-            data={data?.seeRoom?.messages?.slice().reverse()}
+            data={messageList}
             keyExtractor={item => item.id}
             renderItem={_renderItem}
             inverted

@@ -156,7 +156,7 @@ export default function Album() {
   return (
     <Container>
       <UpperConatiner
-        source={selectedPhoto.length === 0 ? {} : {uri: selectedPhoto}}
+        source={selectedPhoto?.length === 0 ? {} : {uri: selectedPhoto}}
       />
       <LowerContainer>
         {snapshots.length === 0 ? (

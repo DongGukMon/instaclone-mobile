@@ -23,6 +23,7 @@ const ROOM_UPDATE_SUBSCRIPTION = gql`
 
 export default function LoggedInNav() {
   const {user} = useUser();
+  
   const updateRoomQuery = (result: any) => {
     const message = result?.data?.roomUpdates;
 
